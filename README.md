@@ -171,19 +171,23 @@ CREATE INDEX idx_Project_manager ON Project(manger_id);
 
 --Sample Data
 INSERT INTO Department (name, location)
-    VALUES ('Engineering','Dehradun');
+    VALUES ('Engineering','Dehradun'),('QA','Noida'),('DevOps','Bengaluru);
 
 INSERT INTO Manager (first_name, last_name, email_id, dept_id)
-        VALUES ('Sankalp', 'Srivastava', 'srivastavasankalpos28@gmail.com', 1);
+        VALUES ('Sankalp', 'Srivastava', 'srivastavasankalpos28@gmail.com', 1),
+        ('Aishwariya', 'Seth', 'aishwariya@example.com',2);
 
-INSERT INTO Project (title, description, manager_id, start_date, end_date, status)
-        VALUES ('DB Optimization','Optimize queries and schema', '1', '2025-08-01', '2025-11-09', ongoing);
+INSERT INTO Project (title, description, manager_id, start_date, status)
+        VALUES ('DB Optimization','Optimize queries and schema', 1, '2025-08-01', ongoing),
+        ('Test Automation', 'Create automation test suites', 2,'2025-09-01', ongoing);
 
 INSERT INTO Intern (first_name, last_name, email_id, university, start_date, dept_id)
-        VALUES ('Vyom','Singh','officialvyomsingh2001@gmail.com, RKGIT, '2025-08-01',1);
+        VALUES ('Vyom','Singh','officialvyomsingh2001@gmail.com, RKGIT, '2025-08-01',1)
+        ('Haseena', 'Rizwi', 'hasrizwi@example.com', 'XYZ',2);
 
 INSERT INTO Intern_Project (intern_id, Project_id, role, weekly_hours)
-        VALUES (1,1,'DB Developer', 40);
+        VALUES (1,1,'DB Developer', 40),
+        (2,2,'QA Engineer', 28);
 
 ERDiagram
 Department{
@@ -354,10 +358,12 @@ CRETE TABLE Intern(
     dept_id INT
 );
 
---IT INTERNSHIP PROJECT MANAGEMENT SYSTEM DATABASE
+--Project: IT INTERNSHIP MANAGEMENT SYSTEM 
+--Description: ER DIAGRAM IMPLIMENTATION IN SQL
+--Author: VYOM SINGH
 --
 
---DROP OLD TABLES IF THEY EXIST (Safe re-run)
+--DROP OLD TABLES (Safe re-run)
 DROP TABLE IF EXISTS Timesheet;
 DROP TABLE IF EXISTS Intern_Project;
 DROP TABLE IF EXISTS Project;
@@ -407,4 +413,30 @@ CREATE TABLE Project(
     end_date DATE,
     status VARCHAR(20) DEFAULT 'Ongoing' CHECK (status IN('Pending','Ongoing','Completed')),
     manager_id INT,
+    FOREIGN KEY (manager_id) REFRANCES Manager(manager_id) ON DELETE SET NULL
+);
+
+--Intern Project (MANY-TO-MANY RELATIONSHIPS)
+CREATE TABLE Intern_project(
+    Intern_id INT
+    Project_id INT,
+    assigned_on DATE DEFAULT CURRENT-DATE,
+    role VARCHAR(50),
+    hours weekly INT CHECK (hours weekly Between 5 and 40)'
+    PRIMARY KEY (Intern_id, Project_id),
+    PRIMARY KEY (Intern_id) REFRENCES Intern(Intern_id) ON DELETE CASCADE,
+    PRIMARY KEY (Project_id) REFRENCES Project(project_id) ON DELETE CASCADE
+);
+
+--Timesheet Table (Intern work log)
+CREATE TABLE Timesheet(
+    timesheet_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Intern_id INT,
+    Project_id INT,
+    work_date DATE DEFAULT CURRENT_DATE,
+    task_details VARCHAR(255),
+    hour_worked DECIMAL(4,2) CHECK (hours_worked BETWEEN 0 AND 12),
+    FOREIGN KEY (intern_id,Priject_id) REFRANCES Intern_Project(Intern_id,Project_id) ON DELETE CASCADE
+);
+
     
