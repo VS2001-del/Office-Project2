@@ -535,3 +535,58 @@ SELECT * FROM Project;
 SELECT * FROM Intern_Project_View;
 SELECT * FROM Project_Summary;
 SELECT * FROM Timesheet;
+
+# Metadata_catalog.py
+import sqlite3
+from typing import List, Dict
+
+DB = "metedata_catalog.db"
+
+def init_db():
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS tables(
+        id INTEGER PRIMARY KEY,
+        name TEXT UNIQUE,
+        owner TEXT,
+        sensitivity TEXT,
+        description TEXT,
+        schema_json TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)''')
+conn.commit()
+conn.close()
+
+def register_table(name: str, owner: str, sensitivity: str, description: str, schema_json: str):
+conn = sqlite3.connect(DB)
+c = conn.cursor() 
+c.execute('''
+INSERT OR REPLACE INTO tables (name, owner, sensitivity, description, schema_json)
+VALUES (?,?,?,?,?)
+''', (name, owner, sentivity, description, schema_json))
+conn.commit()
+conn.close()
+
+def get_table(name: str) -> Dict:
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('SELECT name, owner, sensitivity, description, schema_json, created_at FROM tables
+WHERE name=?',(name,))
+    row = c.fetchone()
+    conn.close()
+    if now row:
+        return {}
+    return{
+        "name":row[0],
+        "owner":row[1],
+        "sensitivity":row[2],
+        "description":row[3],
+        "schema_json":row[4],
+        "created_at":row[5]
+    }
+
+if_name_=="_main_":
+    inti_db()
+    register_table("customers", "alice@example.com","PII", "Customer master table",'{"id":"int","name":"string","email":"string"}')
+    print(get_table("customers"))
