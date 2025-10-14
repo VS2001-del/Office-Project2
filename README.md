@@ -175,7 +175,7 @@ INSERT INTO Department (name, location)
 
 INSERT INTO Manager (first_name, last_name, email_id, dept_id)
         VALUES ('Sankalp', 'Srivastava', 'srivastavasankalpos28@gmail.com', 1),
-        ('Aishwariya', 'Seth', 'aishwariya@example.com',2);
+        ('Aishwariya', 'Singh', 'aishwariya@example.com',2);
 
 INSERT INTO Project (title, description, manager_id, start_date, status)
         VALUES ('DB Optimization','Optimize queries and schema', 1, '2025-08-01', ongoing),
@@ -439,4 +439,99 @@ CREATE TABLE Timesheet(
     FOREIGN KEY (intern_id,Priject_id) REFRANCES Intern_Project(Intern_id,Project_id) ON DELETE CASCADE
 );
 
-    
+--Sample Data Insertion
+INSERT INTO Department (dept_name, Location)
+VALUES ('Software Development', 'Dehradun'),
+    ('Quality Assurance','Noida'),
+    ('Human Resourse','Bangaluru');
+
+INSERT INTO Manager (first_name, last_name, email, phone, dept_id) 
+VALUES ('sankalp', 'srivastava', srivastavasankalpos28@gmail.com, '7438464837',1),
+    ('aishwariya', 'singh', 'airwariya@example.com', '7836758365', 2);
+
+INSERT INTO Intern (first_name, Last_name, email, university, cgpa, Start_date, end_date, dept_id)
+VALUES ('Vyom', 'Singh', 'officialvyomsingh2001@gmail.com', RKGIT, 8.7, '2025-08-01', '2025-11-09', 1),
+    ('Haseena', 'Rizwi', hasrizwi@example.com', XYZ, 6.5, '2025-09-01', '2025-12-09', 2);
+
+INSERT INTO Project (Project_name, description, start_date, end_date, status, manager_id)
+VALUES ('Database Management System', 'Design and implement DBMS for Interns.','2025-08-01', '2025-11-09', 'ongiong', 1),
+    ('Network security setup', 'configure firewell and VPN.', '2025-09-01', '2025-12-09', 2);
+
+INSERT INTO Intern_Project (intern_id, Project_id, role, hours_weekly)
+VALUES (1, 1, 'Database Developer', 40),
+    (2, 2,'Backend Developer', 28);
+
+INSERT INTO Timesheet (intern_id, Project_id, work_date, task_details, hours_worked)
+VALUES ( 1, 1, '2025-08-10', 'Created ER Diagram', 6),
+    (1, 1, '2025-08-28', 'Implemented SQL schema', 5),
+    (2, 2, '2025-09-15', 'Developed stored procedures', 7);
+
+CREATE OR REPLACE VIEW Intern_Project_View_As
+SELECT
+    i.intern_id,
+    CONCAT(i.first_name,'',i.last_name) AS intern_name,
+    p.project_name,
+    ip.role,
+    ip.hours_weekly,
+    p.status
+FROM Intern i
+JOIN Intern_Project ip ON i.intern_id = ip.intern_id
+JOIN Project p ON p.project_id = ip.project_id;
+
+CREATE OR REPLACE VIEW Project_Summary AS
+SELECT
+    p.project_id,
+    p.project_name,
+    COUNT(ip.intern_id) AS total_interns,
+    p.status
+FROM Project p
+LEFT JOIN Intern_Project ip ON p.project_id = ip.project_id
+GROUP BY p.project_id, p.project_name, p.status;
+
+--Views
+CREATE OR REPLACE VIEW Intern_Project_View AS
+SELECT
+    i.intern_id,
+    CONCAT(i.first_name,'',i.last_name) AS intern_name,
+    p.project_name,
+    ip.role,
+    ip.hours_weekly,
+    p.status
+FROM Intern i
+JOIN Intern_project ip ON i.intern_id = ip.intern_id
+JOIN Project p ON p.project_id = ip.project_id;
+
+CREATE OR REPLACE VIEW Project_summary AS
+SELECT
+    p.project_id,
+    p.project_name,
+    COUNT(ip.intern_id) AS total_interns,
+    p.status
+FROM Project p
+LEFT JOIN Intern_Project ip ON p.project_id = ip.project_id
+GROUP BY p.project_id, p.project_name, p.status;
+
+--Stored Procedures (Assign Intern To Project)
+CREATE OR REPLACE PROCEDURES assignintern(
+        IN p_intern INT,
+        IN p_project INT,
+        IN p_role VARCHAR(50),
+        IN p_hours INT
+);
+LANGUAGE plpgsql
+AS $$
+BEGAIN
+    INSERT INTO Intern_Project(intern_id, project_id, role, Hours_weekly)
+    VALUES (p-intern,p_project, p_role, p_hours);
+END;
+$$;
+
+--Check Output
+
+SELECT * FROM Department;
+SELECT * FROM Manager;
+SELECT * FROM Intern;
+SELECT * FROM Project;
+SELECT * FROM Intern_Project_View;
+SELECT * FROM Project_Summary;
+SELECT * FROM Timesheet;
