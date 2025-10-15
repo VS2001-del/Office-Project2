@@ -772,3 +772,92 @@ SELECT D.Deptname, COUNT (P.ProjectID) AS Totalprojects
 FORM Department D
 LEFT JOIN Project P ON D.DeptID = P.DeptID
 GROUP BY D.DeptName;
+
+--step16: Create Table for leave management
+CREATE TABLE LeaveRequests(
+    LeaveID INT PRIMARY KEY AUTO_INCREMENT,
+    EmpID INT,
+    Leave type VARCHAR(50), --e.g.Sick, Casual, Earned Leaves
+    StartDate DATE,
+    EndDate DATE,
+    Reason VATCHAR(200),
+    Status VARCHAR(20) DEFAULT 'Pending', --Pending, Approved, Rejected
+    FOREIGN KEY (EmpID) REFRENCES Employee(EmpID)
+);
+
+--step17: Create Table for Promotions
+CREATE TABLE Promotions(
+    PromotionID INT PRIMARY KEY AUTO_INCREMENT,
+    EmpID INT,
+    OldPosition VARCHAR(50),
+    NewPosition VARCHAR(50),
+    PromotionDate DATE,
+    FOREIGN KEY (EmpID) REFRENCES Employee(EmpID)
+);
+
+--step18: Create Table for Department Budget
+CREATE TABLE DepartmentBudget(
+    BudgetID INT PRIMARY KEY AUTO_INCREMENT,
+    DeptID INT,
+    Year INT,
+    TotalBudget DECIMAL(12,2),
+    Used Budget DECIMAL (12,2),
+    FOREIGN KEY (DeptID) REFRENCES Department(DeptID)
+);
+
+--step19: Crete Table for Login System (for Admin & Employees)
+CREATE TABLE Login(
+    UserID INT PRIMARY KEY AUTO_INCREMENT,
+    UserName VARCHAR(50) UNIQUE,
+    Password VARCHAR(100),
+    role BARCHAR(20), --('Admin' and 'Employee')
+    EmpID INT,
+    FOREIGN KEY (EmpID) REFRENCES Employee(EmpID)
+);
+
+--step20: Insert Data for Leave Request 
+INSERT INTO LeaveRequests (EmpId, LeaveType, StartDate, EndDate, Reason, Status)
+    VALUES (1, 'Sick Leave', '2023-10-10', '2023-10-12', 'Fever ans rest needed', 'Approved'),
+        (2, 'Casual Leave', '2023-10-15', '2023-10-16', 'Family Function', 'Pending'),
+        (3, 'Earned Leave', '2023-10-05', '2023-10-08', 'Vacation Trip', 'Approved');
+
+--step21: Insert Data for Promotion
+INSERT INTO Promotions (EmpID, OldPosition, NewPosition, PromotionDate) 
+    VALUES (1, 'Developer', 'Senior Developer', '2024-01-01'),
+        (2, 'HR Manager', 'HR Head', '2024-02-15');
+
+--step22: Insert Data for Department Budgets 
+INSERT INTO DepartmetBudget (DeptID, Year, TotalBudget, UsedBudget)
+    VALUES (1, 2024, 500000.00, 300000.00),
+        (2, 2024, 400000.00, 250000.00),
+        (3, 2024, 350000.00, 200000.00),
+        (4, 2024, 300000.00, 180000.00);
+
+--step23: Insert Data for Login
+INSERT INTO Login (UserName, Password, Role, EmpID)
+    VALUES ('admin', 'admin@123', 'Admin', NULL),
+        ('rahul', 'rahul@123', 'Employee, 1),
+        ('priya', 'priya@123', 'Employee, 2);
+
+--step24: Management Queries
+
+--1. View all pending leaves requests
+SELECT L.LeaveID, E.FirstName, E.LastName, L.LeaveType, L.StartDate, L.EndDate, L.Status
+FROM LeaveRequests L
+JOIN Employee E ON L.EmpID = E.EmpID
+WHERE L.Status = 'Pending';
+
+--2. Approve all pending request leave for HR Department
+UPDATE LeaveRequests
+SET Status = 'Approved'
+WHERE EmpID IN (SELECT EmpID FROM Employee WHERE DeptID = 2)
+AND Status = 'Pending';
+
+--3. View Promotin History
+SELECT E.FirstName, E.LastName, P.OldPosition, P.NewPosition, P.PromotionDate
+FROM Promotions P
+JOIN Employee E ON P.EmpID = E.EmpID;
+
+--4. Calculate Remaining Budget for Each Department
+SELECT D.DeptName, B.Year, (B.TotalBudget - B.UsedBudget) AS RemainingBudget
+FROM Department D
