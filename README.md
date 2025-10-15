@@ -677,3 +677,98 @@ if _name_ =="_main"_:
     t = "contact Sankalp at srivastavasankalpos28@gmail.com or 7438464837"
     print(mask_text_for_pii(t))
     
+
+--step 1: Create the Database
+CREATE DATABASE Sparx IT;
+
+--step 2: Use the Database
+USE Sparx IT;
+
+--step 3: Create Depatment table
+CREATE TABLE Department(
+    deptid INT PRIMARY KEY AUTO_INCREMENT,
+    deptname VARCHAR(50),
+    Location VARCHAR(50)
+);
+
+--step 4: Create Employee Table
+CREATE TABLE Employee(
+    empid INT PRIMARY KEY AUTO_INCREMENT,
+    firstname VARCHAR(50),
+    lastname VARCHAR(50),
+    designation VARCHAR(50),
+    salary DECIMAL(10,2),
+    deptid INT,
+    hiredate DATE,
+    FOREIGN KEY (deptid) REFRANCES Department(deptid)
+);
+
+--step 5: Create Project table 
+CREATE TABLE Project(
+    projectid INT PRIMARY KEY AUTO_INCREMENT,
+    project name VARCHAR(100),
+    startdate DATE,
+    enddate DATE,
+    deptid INT,
+    FOREIGN KEY (deptid) REFRENCES Department(deptid)
+);
+
+--step 6: Insert Data Into Department
+INSERT INTO Department (deptname, location)
+VALUES ('IT','DELHI'),('HR','MUMBAI'),('Finance','BENGALURU');
+
+--step 7: Insert Data into Employee
+INSERT INTO Employee (firstname, lastname, designation, salary, deptid, hiredate)
+VALUES ('Sankalp','Shrivastava','Manager', 75000, 1, '2022-04-10'),
+    ('Priya', 'Verma', 'HR Executive', 50000, 2, '2023-01-15'),
+    ('Amit', 'Singh', 'Developer', 60000, 1, '2023-08-01'),
+    ('Neha', 'Patel', 'Accountant', 55000, 3, '2022-11-20');
+
+--step 8: Insert Data into Project
+INSERT INTO Project ( projectname, startdate, enddate, deptid)
+VALUES ('Website Redesign', '2023-09-01', '2024-02-01', 1),
+    ('Employee Training', '2023-10-01', '2024-03-01', 2),
+    ('Budget Analysis', '2023-11-01', '2024-04-01', 3);
+
+--step 9: View Data from all Tables
+SELECT * FROM Department;
+SELECT * FROM Employee;
+SELECT * FROM Project;
+
+--step 10: Management Queries 
+
+--1. List all employees with their department name
+SELECT E.FirstName, E.LastName, E.Designation, D.DeptName
+FROM Employee E
+JOIN Department D ON E.DeptID = D.deptid;
+
+--2. Show all projects handled by the IT Department
+SELECT P.ProjectName, D.DeptName
+FROM Project P
+JOIN D.DeptName = 'IT';
+
+--3. Find employees earning more than 55,000
+SELECT FirstName, LastName, Salary
+FROM Employee
+WHERE Salary > 55000;
+
+--4. Increase salary of all HR employee by 10%
+UPDATE Employee
+SET Salary = Salary*1.10
+WHERE deptid = 2;
+
+--5. Delete employee who left before 2023
+DELETE FROM Employee
+WHERE Hiredate < '2023-01-01';
+
+--6. Show total employees in each department
+SELECT D.DeptName, COUNT(E.EmpID) AS Total Employees
+FROM Department D
+LEFT JOIN Employee E ON D.DeptID = E.DeptID
+GROUP BY D.DeptName;
+
+--7. Show total project count per department
+SELECT D.Deptname, COUNT (P.ProjectID) AS Totalprojects
+FORM Department D
+LEFT JOIN Project P ON D.DeptID = P.DeptID
+GROUP BY D.DeptName;
