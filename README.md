@@ -590,7 +590,7 @@ if_name_=="_main_":
     inti_db()
     register_table("customers", "alice@example.com","PII", "Customer master table",'{"id":"int","name":"string","email":"string"}')
     print(get_table("customers"))
-#dq_checks.py
+# dq_checks.py
 import pandas as pad
 from typing List, Dict, Any
 
@@ -629,7 +629,7 @@ def run_checks(pd.dataframe, checks: List[dict]) -> list[dect]:
             results.append(check_range(df, c["column"], c.get("min"), c.get("max")))
 return results
 
-#example usage
+# example usage
 if _name_=="_main_":
     sample = pd.dataframe({
     "id": [1,2,3,3],
@@ -643,3 +643,37 @@ checks = [
 
 ]
 print(run_checks(sample,checks))
+
+
+# pi_masking.py
+import re
+
+Email_RE = re.compile(r'[\w\.-]+@[\w\.-]+')
+Phone_RE = re.compile(r'\b(?:\+?\d{1,3)[-.\s]?)?(?:\d{10}|\d{3}[-.\s]\d{3}[-.\s]\d{4})\b')
+
+def mask_email(email:str) -> str:
+    if not email: return email
+    local, sep, domain = email.patition('@')
+    if len(local) <= 2:
+        local_masked = local[0] + ""(len(local)-1)
+    else:
+        local_masked = local[0] + ""(len(local)-2) + local[-1]
+    return f"{local_masked}{sep}{domain}"
+
+def mask_phone(phone: str) -> str:
+    digits = re.sub(r'\D',",phone)
+    if len(digit) <=4:
+        return "*" *len(digits)
+    return ""(len(digits)-4) + digits[-4:]
+    
+def mask_text_for_pii(text: str) -> str:
+    if not text: return text
+    text = Email_RE.sub(lambda m: mask_email(m.group(0)),text)
+    text = Phone_RE.sub(lambda m: mask_phone(m.group(0)),text)
+
+
+# Example:
+if _name_ =="_main"_:
+    t = "contact Sankalp at srivastavasankalpos28@gmail.com or 7438464837"
+    print(mask_text_for_pii(t))
+    
