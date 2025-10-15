@@ -590,3 +590,56 @@ if_name_=="_main_":
     inti_db()
     register_table("customers", "alice@example.com","PII", "Customer master table",'{"id":"int","name":"string","email":"string"}')
     print(get_table("customers"))
+#dq_checks.py
+import pandas as pad
+from typing List, Dict, Any
+
+def check_nulls(df: pd.dataframe, column: str, max_null_pct: float) -> dict[str, Any]:
+    null_pct = df[column].isna().mean()*100
+    passed = null_pct <= max_null_pct
+    return {"check": "null_pct", "column": column, "null_pct": null_pct, "max_allowed_pct":
+max_null_pct, "passed": passed}
+
+def check_uniqueness(df: pd.dataframe, column: str) -> dect[str, Any]:
+dup_count = df.shape[0] - df[column].nunique(dropna=false)
+passed = dup_count == 0
+return{"check":"uniquness", "column": column, "duplicates": Dup_count, "passed": passed}
+
+def check_range(df: pd.dataframe, column: str, min_val=None, max_val=None) -> dict[str, Any]:
+    if min_val is not none:
+    below_min = (df[column] < min_val).sum()
+else:
+    below_min = 0
+of max_val is not none:
+    above_max = (df[column] > max_val).sum()
+else:
+    above_max = 0
+passed = (below_min + above_max) ==0
+return {"check": "range", "column": column, "below_min": int(below_min), "above_max":
+int(above_max), "passed": passed}
+
+def run_checks(pd.dataframe, checks: List[dict]) -> list[dect]:
+    result = []
+    for c in checks:
+        if c["type"] == "nulls":
+            results.append(check_nulls(df, c["column"], c.get("max_null_pct",0)))
+        elif c["type"] == "uniqueness":
+            results.append(check_uniqueness(df, c["column"]))
+        elif c["type"] == "range":
+            results.append(check_range(df, c["column"], c.get("min"), c.get("max")))
+return results
+
+#example usage
+if _name_=="_main_":
+    sample = pd.dataframe({
+    "id": [1,2,3,3],
+    "age": [25, none, 200, 30],
+    "email": ["a@x.com", "b@y.com", "d@z.com"]
+})
+checks = [
+    {"type":"nulls","column":"email","max_null_pct":10},
+    {"type":"uniqueness","column":"id"},
+    {"type":"range","column":"age","min":0,"max":120},
+
+]
+print(run_checks(sample,checks))
