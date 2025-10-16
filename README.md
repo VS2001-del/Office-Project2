@@ -861,3 +861,323 @@ JOIN Employee E ON P.EmpID = E.EmpID;
 --4. Calculate Remaining Budget for Each Department
 SELECT D.DeptName, B.Year, (B.TotalBudget - B.UsedBudget) AS RemainingBudget
 FROM Department D
+
+
+--step25: Triggers
+
+--1. When salary is Updated, Add entry to salaryhistory
+DELIMITER //
+CREATE TRIGGER after_salary_update
+AFTER UPDATE ON Employee
+FOR EACH ROW
+BEGIN 
+    if NEW.Salary<>Old.Salary THEN
+    INSERT INTO SalaryHistory (EmpID, OldSalary, NewSalary, ChangeDate)
+    VALUES (NEW.EmpID, OLD.Salary, NEW.Salary, CURDATE());
+END IF;
+END //
+DELIMITER;
+
+--2. When Leave Approved → Send (Simulated) Log Entry
+CREATE TABLE LeaveLogs(
+    LogID INT PRIMARY KEY AUTO_INCREMENT,
+    LeaveID INT,
+    ActionDate DATE,
+    Message VARCHAR(200)
+);
+
+DELIMITER //
+CREATE TRIGGER After_leave_approval
+AFTER UPDATE ON LeaveRequests
+FOR EACH ROW
+BEGIN
+    IF NEW.Status = 'Approved' THEN
+       INSERT INTO LeaveLog (LeaveID, ActionDate, Message)
+       VALUES (NEW.LeaveID, CURDATE(), CONCAT('Leave approved for LeaveID', NEW.LeaveID));
+    END IF;
+END //
+DELIMITER;
+
+--step26: VIEWS
+
+--1. Employee Overview
+CREATE VIEW EmployeeOverview AS
+SELECT E.EmpID, E.FirstName, E.LastName, D.DeptName, E.Designation, E.Salary, E.Bonus
+FROM Employee E
+JOIN Depertment D ON E.DeptID = D.DeptID;
+
+--2. Leave Summary
+CREATE VIEW LeaveSummary AS 
+SELECT E.FirtName, E.LastName, COUNT(L.LeaveID) AS TotalLeave,
+SUM(CASE WHEN L.Status = 'Apporoved' THEN 1 ELSE 0 END) AS ApprovedLeaves
+FROM Employee E
+LEFT JOIN LeaveRequests L ON E.EmpID = L.EmpID
+GROUP BY E.EmpID;
+
+--step27: FUNCTIONS
+
+--1. Calculate Annual Bonus (10% of Salary if Rating ≥ 4)
+DELIMITER // 
+CREATE FUNCTION GetAnnualBonus(emp INT)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGAIN
+    DECLARE avgRating DECIMAL(3,2);
+    DECLARE empSalary DECIMAL(10,2);
+    DECLARE bonus DECIMAL(10,2);
+
+    SELECT AVG(Rating) INTO avgRating FROM Performance WHERE EmpID = emp;
+    SELECT Salary INTO empSalary FROM Employee WHERE EmpID = emp;
+
+IFavgRating>=4 THEN
+    SET bonus = empSalary*0.10;
+ELSE
+    SET bonus = empSalary*0.03;
+END IF;
+
+    RETURN bonus;
+END //
+DELIMITER;
+
+--Example usage
+SELECT FirstName, LastName, GetAnnualBonus(EmpID) AS AnnualBonus FROM Employee;
+
+--step28: Advance Reporting Queries
+
+--1. Rank Employees by salary (Highest to Lowest)
+SELECT EmpID, FirstName, LastName, Salary,
+RANK() OVER (ORDER BY Salary DESC) AS SalaryRank
+FROM Employee;
+
+--2. Find Top performer in Each Department
+SELECT D.DeptName, E.FirstName, E.LastName, MAX(P.Rating) AS TopRating
+FROM Department D
+JOIN Employee E ON D.DeptID = E.DeptID
+JOIN Performance P ON E.EmpID = P.EmpID
+GROUP BY D.DeptName;
+
+--3. Average Salary & Bonus Department
+SELECT D.DeptName, AVG(E.Salary) AS AvgSalary, AVG(E.Bonus) AS AvgBonus
+FROM Department D
+JOIN Employee E ON D.DeptID = E.DeptID
+GROUP BY D.DeptName;
+
+--4. List employees joined in last 12 Months
+SELECT FirstName, LastName, HireDate
+FROM Employee
+WHERE HireDate >=Date_SUB(CURDATE(), INTERVAL 12 MONTHS);
+
+--5. Total working days per momth (Present Count)
+SELECT EmpID, MONTH(DATE) AS MonthNo,
+SUM(CASE WHEN Status='Present' THEN 1 ELSE 0 END) AS WorkingDays
+FROM Attendance 
+GROUP BY EmpID, MONTH(Date);
+
+--step29: Automated Cleanup Trigger
+
+--Automatically delete old salary history after 2 years
+DELIMITER //
+CREATE TRIGGER cleanup_salary_history
+BEFORE INSERT ON SalaryHistory
+FOR EACH ROW
+BEGIN
+    DELETE FROM SalaryHistory
+    WHERE ChangeDate < DATE_SUB(CURDATE(), INTERVAL 2 YEAR);
+END //
+DELIMITER;
+
+--step30: VIEW for Manager Dashboard (Summary)
+
+CREATE VIEW ManagerDashboard AS
+SELECT
+    D.DeptName,
+    COUNT(E.EmpID) AS EmployeeCount,
+    AVG(E.Salary) AS AvgSalary,
+    SUM(E.Bonus) AS TotalBonus,
+    COUNT(DISTINCT P.ProjectID) AS ProjectCount
+FROM Department D
+LEFT JOIN Employee E ON D.DeptID = E.DeptID
+LEFT JOIN Project P ON D.DeptID = P.DeptID
+GROUP BY D.DeptName;
+
+--step31: PAYROLL SYSTEM
+
+CREATE TABLE Payroll(
+    PayrollID INT PRIMARY KEY AUTO_INCREAMENT,
+    EmpID INT,
+    MonthYear VARCHAR(10),
+    BasicSalary DECIMAL(10,2),
+    Bonus DECIMAL(10,2),
+    Tax DECIMAL(10,2),
+    NetSalary DECIMAL(10,2),
+    PaymentDate DATE,
+    FROEIGN KEY (EmpID) REFRENCES Employee(EmpID)
+);
+
+--step32: Function to calculate tax (10% if salary>60K)
+DELIMITER //
+CREATE FUNCTION CalculateTax(salary DECIMAL(10,2))
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGAIN
+    DECLARE tax DECIMAL(10,2);
+    IF Salary > 60000 THEN
+    SET tax = Salary*0.10;
+ELSE
+    SET tax = Salary*0.05;
+END IF;
+RETURN tax;
+END //
+DELIMITER;
+
+--step33: Insert monthly payroll data
+INSERT INTO Payroll (EmpID, MonthYear, BasicSalary, Bonus, Tax, NetSalary, PaymentDate)
+SELECT
+    EmpID,
+    '2023-10' AS MonthYear,
+    Salary,
+    IFNULL(Bonus,0),
+    CalculateTax(Salary),
+    (Salary + IFNULL(Bonus,0)) - CalculateTax(Salary),
+    CURDATE()
+FROM Employee;
+
+--step34: TimeSheet Tracking
+CREATE TABLE TimeSheet(
+    TimeSheetID INT PRIMARY KEY AUTO_INCREMENT,
+    EmpID INT,
+    WorkDate DATE,
+    HoursWorked DECIMAL(4,2),
+    TaskDescription VARCHAR(200),
+    FOREIGN KEY (EmpID) REFRENCES Employee(EmpID)
+);
+
+--step35: Insert into Timesheet Entities
+INSERT INTO Timesheet (EmpID, WorkDate, HoursWorked, TaskDescription)
+    VALUES (1, '2023-10-01', 8.0, 'Developed Login Module'),
+        (1, '2023-10-02', 7.5, 'Debugging API'),
+        (2, '2023-10-01', 8.0, 'HR Interviews'),
+        (3, '2023-10-01', 6.0, 'Finantial Report Creation');
+
+--step36: Expense Management
+CREATE TABLE Expenses(
+    ExpenseID INT PRIMARY KEY AUTO_INCREMENT,
+    DeptID INT,
+    ExpenseType VARCHAR(100),
+    Amount DECIMAL(10,2),
+    ExpenseDate DATE,
+    FORGEIGN KEY (DeptID) REFRENCES Department(DeptID)
+);
+
+--step37: Insert Expense Data
+INSERT INTO Expanses (DeptID, ExpenseType, Amount, ExpenseDate)
+    VALUES (1, 'Software Licenses', 50000, '2023-09-10'),
+        (2, 'Recruitment Ads', 20000, '2023-09-15'),
+        (3, 'Office Supplies', 15000, '2023-09-18'),
+        (4, 'Client Meetings', 25000, '2023-09-25');
+
+--step38: Audit Logs (Tracks all updates to Employee Table)
+CREATE TABLE AuditLog(
+    LogID INT PRIMARY KEY AUTO_INCREMENT,
+    EmpID INT,
+    Action VARCHAR(50),
+    OldSalary DECIMAL(10,2),
+    NewSalary DECIMAL(10,2),
+    ActionDate DATETIME
+);
+
+DELIMITER //
+CREATE TRIGGER log_salary_changes
+AFTER UPADATE ON Employee
+FOR EACH NOW
+BEGIN
+    IF OLD.Salary<>NEW.Salary THEN
+    INSERT INTO AuditLog (EmpID, Action, OldSalary, NewSalary, ActionDate)
+    VALUES (NEW.EmpID, 'Salary Updated', OLD.Salary, NEW.Salary, NOW());
+    ENF IF;
+END //
+DELIMITER;
+
+--step39: Advanced Report
+
+--1. Moonthly Payroll Summary by Department
+SELECT D.DeptName, SUM(P.NetSalary) AS TotalPaid
+FROM Department D
+JOIN Employee E ON D.DeptID = E.DeptID
+JOIN PayRoll P ON E.EmpID = P.EmpID
+GROUP BY D.DeptName;
+
+--2. Total hours worked by Employee (Monthly)
+SELECT E.FirstName, E.LastName, SUM(T.HoursWorked) AS TotalHours
+FROM Employee E
+JOIN Timsheet T ON E.EmpID = T.EmpID
+WHERE MONTH(T.WorkHours) = 10
+GROUP BY E.EmpID;
+
+--3. Department Expenses vs Budget Comparison
+SELECT D.DeptName, SUM(Ex.Amount) AS TotalExpenses, B.TotalBudget,
+(B.TotalBudget - SUM(Ex.Amount)) AS Balance
+FROM Department D
+JOIN DepartmentBudget B ON D.DeptID = B.DeptID
+JOIN Expenses Ex ON D.DeptID = Ex.DeptID
+GROUP BY D.DeptName;
+
+--4. CTE Example: Find top 3 Highest Paid Employees
+WITH SalaryRank AS(
+    SELECT EmpID, FirstName, LastName, Salary,
+        RANK() OVER (ORDER BY Salary DESC) AS RankNo
+    FROM Employee
+)
+SELECT * FROM SalaryRank WHERE RankNo <= 3;
+
+--5. Employees who worked overtime (More then 8 hrs/day)
+SELECT E.FirstName, E.LastName, T.WorkDate, T.HoursWorked
+FROM Employee E 
+JOIN Timesheet T ON E.EmpID = T.EmpID
+WHERE T.HoursWorked>8;
+
+-step40: View for payroll dashboard
+CREATE VIEW PayRollDashboard AS
+SELECT
+    E.FirstName, E. LastName, P.MonthYear, P.Bonus, P.Tax, P.NetSalary
+FROM Employee E
+JOIN PayRoll P ON E.EmpID = P.EmpID;
+
+--step41: Create function to get total annual salary 
+DELIMITER //
+CREATE FUNCTION GetAnnualSalary(Emp INT)
+RETURNS DECIMAL(10,2)
+DETERMISTIC
+BEGIN
+    DECLARE total DECIMAL(10,2);
+    SELECT SUM(NetSalary)INTO total FROM PayRoll WHERE EmpID = emp;
+    RETURN total;
+END //
+DELIMITER;
+
+--step42: Generate annual report
+SELECT E.FirstName, E.LastName, GetAnnualSalary(E.EmpID) AS AnnualEarnings
+FROM Employee E;
+
+--step43: Data Backup Simulation
+CREATE TABLE Backup_Employee AS
+SELECT * FROM Employee;
+
+CREATE TABLE Backup_PayRoll AS
+SELECT * FROM PayRoll;
+
+--step44: View Audit Logs
+SELECT * FROM AuditLog ORDER BY ActionDate DESC;
+
+--step45: Manager Report: Department Efficiency
+SELECT D.DeptName,
+AVG(P.Rating_) AS AvgPerformance,
+SUM(T.HoursWorked) AS TotalHours,
+SUM(Pay.NetSalary) AS TotalSalaryPaid
+FROM Department D
+JOIN Employee E D.DeptID = E.DeptID
+JOIN Performance P ON E.EmpID = P.EmpID
+JOIN Timesheet T ON E.EmpID = T.EmpID
+JOIN PayRoll Pay ON E.EmpID = Pay.EmpID
+GROUP BY D.DeptName;
+
