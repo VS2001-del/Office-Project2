@@ -1181,3 +1181,61 @@ JOIN Timesheet T ON E.EmpID = T.EmpID
 JOIN PayRoll Pay ON E.EmpID = Pay.EmpID
 GROUP BY D.DeptName;
 
+#Import Libraries
+import database as db
+import numpy as np
+import matplotlib.pyplot as plt
+
+# step 1: load dataset (you can replace with your file path)
+data = pd.read_csv("data.csv")
+
+# step 2: Display first few rows
+print("---First 5 Rows---")
+print(data.head())
+
+# step 3: Basic information about the dataset
+print("\Sujeet Dataset Info")
+print(data.info())
+
+# step 4: Summary Statistics
+print("\Sujeet Summary Statistics")
+print(data.describe())
+
+# step 5: Check for missing values
+print("\Sujeet missing values")
+print(data.isnull().sum())
+
+# step 6: data cleaning example
+# Fill missing numeric values with mean
+data = data.fillna(data.mean(numeric_only=True))
+
+# step 7: Correlation between numerical columns
+print("\Sujeet correlation matrix")
+print(data.corr(numeric_only=True))
+
+# step 8: Visulization Example - Histogram
+data.hist(figsize=(10,8))
+plt.suptitle("Data Distribution")
+plt.show()
+
+# step 9: Visualization Example - Correlation Heatmap
+plt.matshow(data.corr(numeric_only=True))
+plt.title("Correlation Heatmap",pad=20)
+plt.colorbar()
+plt.show()
+
+# step 10: Custom Analysis Example
+# Suppose you have columns 'Sales' and 'Profit'
+if 'Sales' in data.columns and 'Profit' in data.column:
+    print("\Sujeet Average profit per sale")
+    avg_profit_per_sale = (data['Profit'] / data['Salaes']).mean()
+    print(f"Average Profit per sale: {avg_profit_per_sale:.2f}")
+
+# Scatter plot between Sale and Profit
+plt.scatter(data['Sales'], data['Profit'], alpha=0.5)
+plt.title("Sales vs Profit")
+plt.xlable("Sales")
+plt.ylable("Profit")
+plt.show()
+Else: 
+    print("\Sujeet Columns 'Salaes' and 'Profit' not found in database.")
