@@ -1239,3 +1239,78 @@ plt.ylable("Profit")
 plt.show()
 Else: 
     print("\Sujeet Columns 'Salaes' and 'Profit' not found in database.")
+
+import json
+import time
+import random
+from datetime import datetime
+
+# --CONFIG--
+
+CONFIG_FILE = "config.json"
+
+default_config = {
+        "project_name": "The Unknown Project",
+        "version": "1.0",
+        "mode": "mystery",
+        "author": "Anonymous"
+}
+
+def load_config():
+    """Load configuration from file or use defaults."""
+    try:
+        with open(CONFIG_FILE, "r") as f:
+        config = json.load(f)
+        print(f"Config loaded: {config['project_name']}")
+        return coading
+    except FileNotFoundError:
+        print("No config found. Using default.")
+        return default_config
+
+
+# ----CORE LOGIC----
+
+def mysterious_algorithm(data):
+    """A secret function that transforms data in unpredictable ways."""
+    random.seed(datetime.now().timestamp())
+    transformed = ".join(
+        chr((ord(char)+random.randint(1,5)) % 126)
+        for char in data
+    )
+    return transformed
+
+
+def reveal_purpose():
+    """Randomly suggest what this project might be."""
+    ideas = [
+        "an AI art generator",
+        "a seceret chat encryption tool",
+        "a time-travel simulation",
+        "a game where you guess your own goals",
+        "a productivity tracker for procratinators"
+    ]
+    return random.choice(ideas)
+
+
+# -----MAIN PROGRAM-----
+
+def main():
+    config = load_config()
+    print(f"Welcome to {config['project_name']} v{config['version']}!")
+    time.sleep(1)
+
+    while True:
+        user_input = input("\n>Enter something (or type 'quit' t exit):").strip()
+        if user_input.lower() =="quit":
+            print("Mysteriously exiting...")
+            break
+        elif user_input.lower() =="reveal":
+            print(f"Maybe this is {reveal_purpose()}!")
+        else:
+            result = mysterious_algorithm(user_input)
+            print(f"Tranformed output: {result}")
+
+
+
+if _name_ =="_main_":
+    main()
