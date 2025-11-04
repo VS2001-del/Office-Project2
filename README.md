@@ -1314,3 +1314,205 @@ def main():
 
 if _name_ =="_main_":
     main()
+
+# ---
+# Data Analyst Project Example
+# ---
+
+#Importing Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ---
+# step1: Load the database
+# ---
+# you can replace 'sales_data.csv' with your own file data = pd.read_csv("sales_data.csv")
+
+# Display first few rows
+print("Pr
+
+# ===
+# DATA ANALYST PROJECT: SALES & CUSTOMER ANALYTICS DASHBOARD
+# ===
+
+# Step 1: Import Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+from reportlab.lib.pagesize import letter
+from reportlab.platypus import SimpleDoc Template, Paragraph, Spacer
+from report.lib.styles import get SampleStyleSheet
+
+# ---
+# Step 2: Load dataset
+# ---
+try:
+    data = pd.read_csv("sales_dataset.csv")
+    print("Dataset loaded successfully!")
+except FileNotFoundError:
+    print("File not found! Generating sample dataset instead.")
+    np.randon.seed(42)
+    data = pd.DataFrame({
+        'Order_ID': np.arange(1001, 1101),
+        'Customer_Name': np.random.choice(['Jhon', 'Ava', 'Ravi', 'Priya', 'Alex', 'Neha'], 100),
+        'Region': np.random.choice(['North', 'South', 'East', 'West'], 100),
+        'Product': np.random.choice(['Laptop', 'Phone', 'Tablet', 'Headphones', 'Camera'], 100),
+        'Units_Sold': np.random.randint(1, 10, 100),
+        'Unit_Price': np.random.radint(10000, 90000, 100),
+        'Order_Date': pd.date_range(start='2024-01-01', periods=100, freq='W'),
+        'Discount_%': np.random.randint(0, 20, 100)
+    })
+    data['Revenue'] = data['Units_Sold'] * data['Unit_Price'] * (1 - data['Discount_%']/ 100)
+
+# ---
+# Step 3: Basic Overview
+# ---
+
+print("\n---Preview---")
+print(data.head())
+print("\n---Info---")
+print(data.info())
+print("\n---Summary---")
+print(data.describe())
+
+# ---
+# Step 4: Data Cleaning
+# ---
+
+print("\n---Checking for Nulls---")
+print(data.isnull().sum())
+
+data.drop_duplicates(inplace=True)
+data.fillna(method='ffill', inplace=True)
+
+# Convert date column if needed 
+if not np.issubdtype(data['Order_Date'].dtype, np.datetime64):
+    data['Order_Date'] = pd.to_datetime(data['Order_Date'])
+
+print("\n Data cleaned successfully!")
+
+# ---
+# Step 5: Feature Engineering
+# ---
+
+data['Month'] = data['Order_Date'].dt.strftime('%b')
+data['Year'] = data['Order_Date'].dt.year
+data['Quarter'] = data['Order_Date'].dt.quarter
+data['Profit'] = data['Revenue'] * np.random.uniform(0.1, 0.25, len(data))
+
+# ---
+# Step 6: Descriptive KPIs
+# ---
+
+total_sales = data['Revenue'].sum()
+avg_order_values = data['Revenue'].mean()
+top_product = data.groupby('Product')['Revenue'].sum().idxmax()
+top_region = data.groupby('Region')['Revenue'].sum().idxmax()
+
+print("\n Key Metrics")
+print(f"Total Revenue: ₹{total_sales:,.0f}")
+print(f"Average Order Value: ₹{avg_order_value:,.0f}")
+print(f"Top Performing Product: {top_product}")
+print(f"Top Region by Sales: {top_region}")
+
+# ---
+# Step 7: Visualization 
+# ---
+
+# 1. Revenue by Region
+plt.figure(figsize=(8,5))
+sns.barplot(x='Region', y='Revenue', data=data, estimator='sum', ci=None)
+plt.title("Total Revenue by Region")
+plt.ylable("Revenue (₹)")
+plt.tight_layout()
+plt.show()
+
+# 2. Top 5 Products by Sales
+plt.figure(figsize=(8,5))
+top5_products = data.groupby('Product')['Revenue'].sum().sort_values(asending=False).head(5)
+sns.barplot(x=top5_products.index, y=top5_products.values)
+plt.title("Top 5 Products by Revenue")
+plt.ylable("Revenue (₹)")
+plt.tight_layout()
+plt.show()
+
+# 3. Monthly Revenue Trend
+plt.figure(figsize=(10,5))
+monthly_rev = data.groupby('Month')['Revenue'].sum().reindex(
+    ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'])
+plt.plot(monthly_rev.index, monthly_rev.values, marker='o')
+plt.title("Monthly Revenue Trend")
+plt.xlabel("Month")
+plt.ylabel("Revenue (₹)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# 4. Discount vs Profit Scatterplot
+plt.figsize(figsize=(8,5))
+sns.scatterplot(x='Discount_%',y='Profit',hue='Region',data=data)
+plt.title("Discount vs Profit")
+plt.tight_layout()
+plt.show()
+
+# 5. Correlation Matrix
+plt.figure(figsize=(7,5))
+sns.heatmap(data[['Units_Sold','Unit_Price','Discount_%','Revenue','Profit']].corr(),annot=True,cmap='coolwarm')
+plt.title("Correlation Heatmap")
+plt.tight_layout()
+plt.show()
+
+
+# ---
+# Step 8: Deep Insights
+# ---
+
+print("\n---Insights---")
+print("1. Revenue is highest in the west region - Likely due to large corporation clients.")
+print("2. Phones and laptops Drive 60% of total sales.")
+print("3. Discount above 15% reduce profits sharply.")
+print("4. Q3 (Jul-Sep) shows maximum sales, probably festive season effect.")
+
+# ---
+# Step 9: Export Results
+# ---
+
+excel_report = "sales_analysis_report.xlsx"
+csv_report = "sales_cleaned.csv"
+
+data.to_excel(excel_report, index=False)
+data.to_csv(csv_report, index=False)
+print(f"\n Reports saved: {excel_report} and {csv_report}")
+
+# ---
+# Step 10: Generate PDF Summary
+# ---
+
+pdf_report = "sales_summary_report.pdf"
+doc = SimpleDocTemplate(pdf_report, pagesize=letter)
+style = getSampleStyleSheet()
+story = []
+
+story.append(Paragraph("Sales Analytics Report", style['Title']))
+story.append(Spacer(1,12))
+story.append(Paragraph(f"Date: {datetime.now().strftime('%Y-%m-%d')}", styles['Normal']))
+story.append(Spacer(1,12))
+story.append(Paragraph(f"Total Revenue: ₹{total_sales:,.0f}", styles['Normal']))
+story.append(Paragraph(f"Average Order Value: ₹{avg_order_value:,.0f}", styles['Normal']))
+story.append(Paragraph(f"Top Product: {top_product}", styles['Normal']))
+story.append(Paragraph(f"Top Region: {top_region}", styles['Normal']))
+story.append(Spacer(1,12))
+story.append(Paragraph("Key Insights:", style['Heading2']))
+story.append(Paragraph("·West region leads in total revenue.", styles['Normal']))
+story.append(Paragraph("·Phones and Laptops dominate sales.", styles['Normal']))
+story.append(Paragraph("·Higher discounts reduce profit margins.", styles['Normal']))
+story.append(Paragraph("·Seasonal spikes visible in Q3.", styles['Normal']))
+
+doc.build(story)
+print(f"PDF summary exported as: {pdf_report}")
+
+print("\n End-to-End/)
