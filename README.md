@@ -1516,3 +1516,131 @@ doc.build(story)
 print(f"PDF summary exported as: {pdf_report}")
 
 print("\n End-to-End/)
+
+
+# ===
+# INTERACTIVE DATA ANALYST DASHBOARD USING PLOTLY + DASH
+# ===
+
+import pandas as pd
+import numpy as np
+from dash import Dash, dcc, html, input, output
+import plotly.express as px
+
+# ---
+# Step 1: Data Creation/ Loading
+# ---
+try:
+    df = pd.read_csv("interactive_sales.csv")
+    print("Dataset loaded successfully!")
+except FileNotFoundError:
+    print("File not found! Generating sample dataset....")
+    np.random.seed(42)
+    df = pd.DataFrame({
+        'Order_ID': range(1001, 1021),
+        'Region': np.random.choice(['North', 'South', 'East', 'West'], 200),
+        'Product': np.random.choice(['Laptop', 'Phone', 'Tablet', 'Camera', 'Headphones'], 200),
+        'Units_Sold': np.random.randint(1, 15, 200),
+        'Unit_Price': np.random.randint(10000, 8000, 200),
+        'Discount_%': np.random.randint(0, 20, 200),
+        'Order_Date': pd.date_range(start='2024-01-01', periods=200, freq='W')
+    })
+
+# ---
+# Step 2: Create Dssh App
+# ---
+app = Dash(_name_)
+app.title = "Interctive Sales Dashboard"
+
+# ---
+# Step 3: Layout Design
+# ---
+app.layout = html.Div({
+    html.H1("Sales Analytics Dashboard", style={'textAlign': 'center', 'color': '#2c3e50'}),
+
+    # ---Filters---
+    html.div([
+        html.Label("Select Region:")
+        dcc.Dropdown(
+            id='region_filter',
+            options=[{'label':r, 'value':r} for r in sorted(df['Region'].unique())],
+            value='North',
+            clearable=False
+        ),
+        html.Label("Select Product:"),
+        dcc.Dropdown(
+            id='product_filter',
+            options=[{'label':p, 'value':p} for p in sorted(df['Product'].unique())],
+            value='Laptop',
+            clearable=False
+        )
+    ], style={'widht': '40%', 'margin': 'auto'}),
+
+    html.Br(),
+
+    # --- KPI Cards ---
+    html.Div(id='kpi_cards', style={'display': 'flex', 'justifyContent': 'space-evenly'}),
+
+    html.Br(),
+
+    # --- Graphs ---
+    html.Div([
+        dcc.Graph(id='revenue_trend', style={'width': '48%', 'display': 'inline-block'}),
+        dcc.Graph(id='profit_by_product', style={'width': '48%', 'display': 'inline-block'})
+    ])
+})
+
+# ---
+# Step 4: Callbacks (Dynamic Interaction)
+@app.callback(
+    [Output('kpi_cards', 'children'),
+    Output('Revenue_trend', 'figure'),
+    Output('profit_by_product', 'figure'),
+    Output('region_revenue', 'figure'),
+    Output('discount_profit', 'figure')],
+    [Input('region_filter', 'value'),
+    Input('product_filter', 'value')]
+)
+def update_dashboard(select_region, select_product):
+    filtered = df[(df['Region'] == selected_region) & (df['Product'] == selected_product)]
+
+    # KPIs
+    total_revenue = filtered['Revenue'].sum()
+    total_profit = filtered['Profit'].sum()
+    avg_discount = filtered['Discount_%'].mean()
+
+    kpi_cards = [
+        html.Div([
+            html.H3("Total Revenue"),
+            html.H4(f"₹{total_revenue:,.0f}")
+        ], style={'background': '#f1c40f', 'padding':'10px', 'borderradius':'10px', 'width':'25%'}),
+
+        html.Div([
+            html.H3("Total Profit"),
+            html.H4(f"₹{total_profit:,.0f}")
+        ], style={'background': '#2ecc71', 'padding': '10px', 'borderradius': '10px', 'width': '25%'}),
+
+        html.div([
+            html.H3("Avg Discount"),
+            html.H4(f"{avg_discount:.2f}%")
+        ], style={'background': '#3498db', 'padding': '10px', 'borderradius': '10px', 'width': '25%'})
+    ]
+
+    # Charts
+    revenue_trend = px.line(filtered, x='Order_Date', y='Revenue', title='Revenue Over Time')
+    profit_by_product = px.bar(df.groupby('Product')['Profit'].sum().reset_index(),
+                    x='Product',y='Profit', title='Total Profit by Product',
+                    color='Product')
+    region_revenue = px.bar(df.groupby('Region')['Revenue'].sum().reset_index(),
+                    x='Region',y='Revenue', title='Revenue by Region', color='Region')
+    discount_profit = px.scatter(df, x='Discount_%',y='Profit', color='Region',
+                    title='Discount vs Profit')
+
+    return kpi_cards, revenue_trend, profit_by_product, region_revenue, discount_profit
+
+
+# ---
+# Step 5: Run Server
+# ---
+if_name_=="_main_":
+    print("Running Interactive Dashboard on http://127.0.0.1:8050")
