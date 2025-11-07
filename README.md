@@ -1644,3 +1644,60 @@ def update_dashboard(select_region, select_product):
 # ---
 if_name_=="_main_":
     print("Running Interactive Dashboard on http://127.0.0.1:8050")
+
+
+# ===
+# ADVANCE DATA ANALYST PROJECT: SALES FORECAST & INSIGHTS
+# ===
+
+# 1. Import Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_absolute_error
+from reportlab.lib.pagesizes import letter
+from reportlab.platyplus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from datetime import datetime
+
+# ---
+# 2. Load / Create Dataset
+# ---
+try:
+    df = pd.read_csv("company_sales.csv")
+    print("Dataset loaded successfully!")
+except FileNotFoundError:
+    print("No dataset found - creating sample data...")
+    np.random.seed(100)
+    dates = pd.date_range("2024-01-01", periods=60, freq="M")
+    df = pd.DataFrame({
+        "Month": dates,
+        "Product": np.random.choice(["Laptop", "Phone", "Tablet", "Camera"], len(dates)),
+        "Units_Sold": np.random.randint(50, 500, len(dates)),
+        "Unit_Price": np.random.randint(10000, 80000, len(dates)),
+        "Discount_%": np.random.randint(0, 15, len(dates))
+    })
+    df["Revenue"] = df["Units_Sold"] * df["Unit_Price"] * (1 - df["Discount_%"]/100)
+    df["Profit"] = df["Revenue"] * np.random.uniform(0.1, 0.25, len(df))
+
+# ---
+# 3. DATA CLEANING & FEATURE ENGINEERING
+# ---
+df.drop_duplicaltes(input=True)
+df["Month"] = pd.to_datetime(df["Month"])
+df["Year"] = df["Month"].dt.year
+df["Month_Name"] = df["Month"].dt.strftime("%b")
+df["Quarter"] = df["Month"].dt.quarter
+
+# ---
+# 4. EXPLORATORY DATA ANALYSIS
+# ---
+print("\n---BASIC STATS---")
+print(df.describe())
+
+print("\nTotal Revenue: ₹", df["Revenue"].sum())
+print("Average Monthly Profit: ₹", round(df["Profit"].mean(), 2))
