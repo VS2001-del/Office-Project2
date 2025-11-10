@@ -1966,3 +1966,159 @@ summary = report.groupby('product_name')['total_value'].sum().reset_index()
 summary = summary.rename(columns={'total_value': 'Total Sales Value'})
 
 print("PRODUCT SALES SUMMARY:\n", summary)
+
+Imports pandas as pd
+
+# ---
+# Step 1: Create Datasets
+# ---
+
+# Products data
+products = pd.DataFrame({
+    'product_id': [1, 2, 3, 4],
+    'product_name': ['Laptop', 'Mouse', 'Keyboard', 'Monitor'],
+    'category_id': [10, 11, 11, 12],
+    'price': [800, 20, 50, 150]
+})
+
+# Categories data
+categories = pd.DataFrame({
+    'category_id': [10, 11, 12],
+    'category_name': ['Computers', 'Accessories', 'Displays']
+})
+
+# Sales date
+sales = pd.DataFrame({
+    'sales_id': [101, 102, 103, 104, 105, 106],
+    'product_id': [1, 2, 2, 3, 4, 4],
+    'quantity': [5, 10, 3, 8, 2, 1],
+    'region_id': [201, 202, 202, 203, 201, 204]
+})
+
+# Regions data
+regions = pd.DataFrame({
+    'region_id': [201, 202, 203, 204],
+    'region_name': ['North', 'South', 'East', 'West']
+})
+
+# ---
+# Step 2: Perform Joins
+# ---
+
+# Join sales → products
+sales_products = pd.merge(sales, products, on='product_id', how='left')
+
+# Join with categories
+sales_products = pd.merge(sales_products, categories, on='category_id', how='left')
+
+# Join with regions
+final_data = pd.merge(sales_products, regions, on='region_id', how='left')
+
+# ---
+# Step 3: Add Calculated Columns
+# ---
+
+final_data['total_value'] = final_data['quantity'] * final_data['price']
+
+print("Final Joined Sales Data:\n", final_data)
+
+# ---
+# Step 4: Aggregation
+# ---
+
+# Total sales by region
+region_summary = final_data.groupby('region_name')['total_value'].sum().reset_index()
+print("\nSales By Region:\n", region_summary)
+
+# Total sales by category
+category_summary = final_final.groupby('category_name')['total_value'].sum().reset_index()
+print("\nSales By Category:\n", category_summary)
+
+# Customer and Order Data
+customers = pd.DataFrame({
+    'cust_id': [1, 2, 3, 4, 5],
+    'cust_name': ['Amit', 'Riya', 'Karan', 'Neha', 'Tina']
+})
+
+orders = pd.DataFrame({
+    'order_id': [101, 102, 103, 104],
+    'cust_id': [1, 2, 6, None],
+    'amount': [2000, 1500, 3000, 2500]
+})
+
+# Join customers and orders
+merged = pd.merge(orders, customers, on='cust_id', how='left')
+
+# Handle missing data
+merged['cust_name'] = merged['cust_name'].fillna('Unknown Customer')
+merged['cust_id'] = merged['cust_id'].fillna(0)
+
+print("Joined & Cleaned Customer Data:\n", merged)
+
+# Employees Performance
+performance = df.DataFrame({
+    'emp_id': [1, 2, 3, 4],
+    'sales_made': [50, 70, 30, 90],
+    'targets': [60, 60, 40, 80]
+})
+
+# Employee details
+employees = pd.DataFames({
+    'emp_id': [1, 2, 3, 4],
+    'emp_name': ['Amit', 'Riya', 'Sam', 'Neha'],
+    'dept': ['Sales', 'Sales', 'HR', 'Sales']
+})
+
+# Join
+report = pd.merge(employees, performance, on='emp_id', how='inner')
+
+# Calculate achivement %
+report['achivement_%'] = round((report['sales_made']/report['targets']) * 100, 2)
+
+# Categorize performance
+report['status'] = report['achivement_%'].apply(lambda x: 'Achieved' if x >= 100 else 'Not Achieved')
+
+print("Performance Report:\n", report)
+import matplotlib.pyplot as plt
+
+# Reusing the region_summary from example 1
+region_summary = pd. DataFrame({
+    'region_name': ['North', 'South', 'East', 'West'],
+    'total_value': [6400, 260, 400, 300]
+})
+
+# Bar Chart of Sales by Region
+plt.figure(figsize=(8,5))
+plt.bar(region_summary['region_name'], region_summary['total_value'])
+plt.title('Total Sales Value by Region')
+plt.xlabel('Region')
+plt.ylabel('Total Sales Value')
+plt.show()
+
+# Customers
+customers = pd.DataFrame({
+    'cust_id': [1, 2, 3],
+    'cust_name': ['Ram', 'Shyam', 'Mahesh']
+})
+
+# Orders
+orders = pd.DataFrame({
+    'order_id': [101, 102, 103, 104],
+    'cust_id': [1, 2, 2, 3],
+    'order_amount': [500, 700, 800, 400]
+})
+
+# Payments
+payments = pd.DataFrame({
+    'payment_id': [1001, 1002, 1003, 1004],
+    'order_id': [101, 102, 104, 104],
+    'payment_status': ['Paid', 'Pending', 'Paid', 'Paid']
+})
+
+# Join Step 1: Customers → Orders
+cust_orders = pd.merge(customers, orders, on='cust_id', how='left')
+
+# Join Step 2: Orders → Payments
+final_data = pd.merge(cust_orderd, payments, on='order_id', how='left')
+
+print("Customer Order & Payment Data:\n", final_data)
