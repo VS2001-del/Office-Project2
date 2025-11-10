@@ -1791,3 +1791,83 @@ clean_path = "cleaned_sales_data.xlsx"
 df.to_excel(clean_path, index=False)
 print(f"\n Clean data exported: {clean_path}")
 
+pdf_report = "sales_forecast_report.pdf"
+doc = SimpleDocTemplate(pdf_report, pagesize=letter)
+styles = getSampleStyleSheet()
+story = [
+    Paragraph(" Sales Forecast & Analytics Report", styles["Title']),
+    Spacer(1, 12),
+    Paragraph(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M')}", styles["Normal"]),
+    Spacer(1, 12),
+    Paragraph(f"Total Revenue: ₹{df['Revenue'].sum():,.0f}", styles["Normal"]),
+    Paragraph(f"Average Profit: ₹{df['Profit'].mean():,.0f}", styles["Normal"]),
+    Paragraph("Top Performing Product: " + df.groupby("Product")["Revenue"].sum().idmax(),styles["Normal"]),
+    Spacer(1, 12),
+    Paragraph("Forecast Summary:", styles["Heading2"]),
+    Paragraph(f"Next 6 Months Predicts Total Revenue: ₹ {future_df['Predict_Revenue'].sum():,.0f}, styles["Normal"]),
+    Paragraph("The business is projected to see continuous growth based on historical data trends.", styles["Normal"])
+]
+doc.build(story)
+print(f"PDF report created: {pdf_report}")
+
+import pandas as pd
+
+# Employee details
+employees = pd.DataFrame({
+    'emp_id': [101, 102, 103, 104],
+    'first_name': ['Shruti', 'Sanjay', 'Jyoti', 'Nikhil'],
+    'last_name': ['Roy', 'Singh', 'Rai', 'Yadav'],
+    'dept_id': [1, 2, 1, 3]
+})
+
+# Salary Details
+salaries  = pd.DataFrame({
+    'emp_id': [101, 102, 103, 104],
+    'first_name': ['Shruti', 'Sanjay', 'Jyoti', 'Nikhil'],
+    'salary': [55000, 65000, 60000, 72000]
+})
+
+# Join on multiple colunms: emp_id and first_name
+joined_date = pd.merge(employees, salaries, on=['emp_id', 'first_name'], how='inner')
+print("Multi-Column Join:\n", joined_data)
+
+# Filter only employees from HR department after joining
+departments = pd.DataFrame({
+    'dept_id': [1, 2, 3],
+    'dept_name': ['HR', 'Finance', 'IT']
+})
+
+joined = pd.merge(employees, departments, on='dept_id', how='left')
+hr_employeed = joined[joined['dept_name'] == 'HR']
+print("\nEmployees From HR Department:\n", hr_employees
+# Department data with a different column name
+departments_alt = pd.DataFrame({
+    'department_id': [1, 2, 3],
+    'department_name': ['HR', 'Finance', 'IT']
+})
+
+# Joining using Left_on and Right_on
+joined_alt = pd.merge(employeed, departments_alt, left_on='dept_id', right_on='department_id', how='left')
+print("\n Join Using Different Column Names:\n", joined_alt)
+
+# Product Table
+products = pd.DataFrame({
+    'product_id': [1, 2, 3],
+    'product_name': ['Laptop', 'Mouse', 'Keyboard'],
+    'price': [800, 20, 50]
+})
+
+# Sales Table
+sales = pd.Dataframe({
+    'sale_id': [1, 2, 3, 4],
+    'product_id': [1, 2, 2, 3],
+    'quantity_sold': [5, 10, 3, 7]
+})
+
+# Join products and sales
+sales_report = pd.merge(products, sales, on='product_id', how='inner')
+
+# Add total sales value
+sales_report['total_sales_value'] = sales_report['price'] * sales_report['quantity_sold']
+
+print("\n FINAL SALES REPORT:\n", sales_report)
