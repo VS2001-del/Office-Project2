@@ -1871,3 +1871,98 @@ sales_report = pd.merge(products, sales, on='product_id', how='inner')
 sales_report['total_sales_value'] = sales_report['price'] * sales_report['quantity_sold']
 
 print("\n FINAL SALES REPORT:\n", sales_report)
+
+Import pandas as pd
+
+# Employees details
+employees = pd.DataFrame({
+    'emp_id': [101, 102, 103, 104],
+    'emp_name': ['Shruti', 'Sanjay', 'Jyoti', 'Nikhil'],
+    'dept_id': [1, 2, 1, 3]
+})
+
+# Department details
+departments = pd.DataFrame({
+    'dept_id': [1, 2, 3],
+    'dept_name': ['HR', 'Finance', 'IT'],
+    'location_id': [10, 20, 30]
+})
+
+# Location details 
+locations = pd.DataFrame({
+    'location_id': [10, 20, 30],
+    'location_name': ['Prayagraj', 'Ghazipur', 'Varanasi']
+})
+
+# Step 1: Join employees with departments
+emp_dept = pd.merge(employees, departments, on='dept_id', how='inner')
+
+# Step 2: Join result with locations
+final_join = pd.merge(emp_dept, locations, on='location
+# Employees data
+employees = pd.DataFrame({
+    'emp_id': [1, 2, 3, 4, 5],
+    'emp_name': ['Amit, 'Riya', 'Sam', 'Neha', 'Raj'],
+    'dept_id': [1, 1, 2, 3, 3],
+    'salary': [50000, 55000, 60000, 65000, 70000]
+})
+
+# Departments data
+departments = pd.DataFrame({
+    'dept_id': [1, 2, 3],
+    'dept_name': ['HR', 'Finance', 'IT']
+})
+
+# Join + Aggregate
+joined = pd.merge(employees, deprtments, on='dept_id', how='left')
+
+# Group by department and calculate total salary
+dept_salary = joined.groupby('dept_name')['salary'].sum().reset_index()
+
+print(" Total Salary Per Department:\n", dept_salary)
+
+# Employees (some with invalid department)
+employees = pd.DataFrame({
+    'emp_id': [101, 102, 103],
+    'emp_name': ['Shruti', 'Sanjay', 'Sukkhi'],
+    'dept_id': [1, 4, None]
+})
+
+# Departments 
+departments = pd.DataFrame({
+    'dept_id': [1, 2, 3],
+    'dept_name': ['HR', 'Finance', 'IT']
+})
+
+# Left join (some employees have no department)
+joined = pd.merge(employees, departments, on='dept_id', how='left')
+
+# Fill missing dept_name
+joined['dept_name'] = joined['dept_name'].fillna('Not Assigned')
+
+print("Joined With Missing Values Handled:\n", joined)
+# Sales Data
+sales = pd.DataFrame({
+    'sale_id': [1, 2, 3, 4, 5],
+    'product_id': [101, 101, 102, 103, 101],
+    'quantity': [2, 3, 5, 4, 1]
+})
+
+# Product Data
+products = pd.DataFrame({
+    'product_id': [101, 102, 103],
+    'product_name': ['Laptop', 'Mouse' , 'Keyboard'],
+    'price': [800, 20, 50]
+})
+
+# Join the datasets
+report = pd.merge(sales, products, on='product_id', how='left')
+
+# Calculate total sales value
+report['total_value'] = report['quantity'] * report['price']
+
+# Summarize
+summary = report.groupby('product_name')['total_value'].sum().reset_index()
+summary = summary.rename(columns={'total_value': 'Total Sales Value'})
+
+print("PRODUCT SALES SUMMARY:\n", summary)
