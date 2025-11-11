@@ -2122,3 +2122,369 @@ cust_orders = pd.merge(customers, orders, on='cust_id', how='left')
 final_data = pd.merge(cust_orderd, payments, on='order_id', how='left')
 
 print("Customer Order & Payment Data:\n", final_data)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Design Inspiration Gallery</title>
+    <link rel="icon" herf="data:;base64,iVBORw0KGg0=">
+    <style>
+        :root{
+            --bg:#0f1724;
+            --card:#0b1220;
+            --muted:#8a98b0;
+            --accent:#8ee7b7;
+            --glass: rgba(255,255,255,0.04);
+            --radius:14px;
+            --gap:18px;
+            --max-width:1200px;
+            --shadow: 0 6px 20px rgba(2,6,23,0.6);
+            font-family: Inter, ui-sans-serif, system-ui,-apple-system,"Segoe UI", Roboto, "Helvetica Neue",
+        Arial;
+        }
+    
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+        margin:0;
+        background:
+            radial-gradient(1200px 400px at 10%, rgba(110,231,183,0.06), transparent 8%),
+            linear-gradient(180deg,#071029 0%, #071323 60%);
+        color:#e6eef6;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        display:flex;
+        aling-items:flex-start;
+        justify-content:center;
+        padding:36px 18px;
+    }
+
+    .container{
+        width:100%;
+        max-width:var(--max-width);
+        display:flex;
+        flex-direction:column;
+        gap:22px;
+    }
+
+    header{
+        display;flex;
+        gap:18px;
+        aling-itemms:center;
+        justify-content:space-between;
+    }
+
+    .title{
+        display:flex;
+        gap:14px;
+        aling-items:center;
+    }
+    .logo{
+        width:56px;height:56px;border-radius:12px;
+        background:linear-gradient(135deg,var(--accent),#60a5fa);
+        display:grid;place-items:center;font-weight:700;color:#05232a;
+        box-shadow: 0 6px 18px rgba(14,38,47,0.3);
+        font-family: ui-rounded, system-ui,-apple-system,"Segoe UI",Roboto;
+    }
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{
+        display:flex;
+        gap:12px;
+        aling-items:center;
+        flex-wrap:wrap;
+    }
+
+    .search{
+        display:flex; gap:8px; align-items:center;
+        background:var(--glass); padding:8px 12px; border-radius:10px;
+        min-width:220px;
+    }
+    .search input{
+        background:transparent;border:0;color:inherit;outline:0;font-size:14px;width:160px;
+    }
+    .btn{
+        background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border:1px solid rgba(255,255,255,0.04);
+        color:var(--muted);padding:8px 12px;border-radius:10px;font-size:13px;cursor:pointer;
+    }
+    .btn.primary{color:#05232a;background:linear-gradient(180deg,var(--accent),#48b3f8);font-weight:600}
+    .btn.ghost{background:transparent;border:1px dashed rgba(255,255,255,0,04);color:var(--muted)}
+
+    /*tag filters*/
+    .filters{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);cursor:pointer;border:1px solid rgba(255,255,255,0.02);font-size:13px;color:var(--muted)}
+    .tag.active{background:linear-gradient(90deg,#133b3a,#05232a); color:var(--accent); border-color:rgba(110,231,183,0.14)}
+    
+    /*gallery*/
+    .grid{
+        display:grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:var(--gap);
+    }
+    @media (max-width:1000px){.grid{grid-template-columns: repeat(2, 1fr)}}
+    @media (max-width:640px){.grid{grid-template-columns: 1fr} .title h1{font-size:18px} }
+
+    .card{
+        background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius:var(--radius);
+        overflow:hidden; display:flex; flex-direction:column;
+        box-shadow:var(--shadow); border:1px solid rgba(255,255,255,0.03);
+        transition:transform .22s ease, box-shadow .22s ease;
+    }
+    .card:hover{ transform:translateY(-8px); box-shadow: 0 18px 40px rgba(9,19,29,0.6) }
+
+    .thumb{
+        height:180px; width:100%; object-fit:cover; display:block;
+        background:linear-gradient(90deg,#0b1220,#071323);
+    }
+
+    .card-body{ padding:14px; display:flex; gap:12px; flex-direction:column; flex:1 }
+    .meta{display:flex; align-items:center; gap:10px}
+    .avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#fff2,#fff1);display:grid;place-items:center;color:#05232a;font-weight:700}
+    .card-title{font-size:15px;margin:0;color:#eaf6ff}
+    .card-desc{margin:0;color:var(--muted); font-size:13px}
+
+    .badges{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{font-size:12px;padding:6px 8px:border-radius:8px;background:rgba(255,255,255,0.02);color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+
+    .palette{display:flex; gap:6px; margin-top:8px}
+    .swatch{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;position:relative}
+    .swatch span{position:absolute;right:6px;bottom:4px;font-size:10px;color:rgba(255,255,255,0.8);text-shadow:0 1px 2px rgba(0,0,0,0.6)}
+
+    .card-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto}
+    .actions{display:flex;gap:8px;align-items:center}
+
+    /*modal*/
+    .modal{
+        position:fixed; inset:0; display:none; align-items:center;justify-content:center;
+        background:linear-gradient(180deg, rgba(3,6,12,0.5), rgba(3,6,12,0.75));
+        padding:36px; z-index:80;
+    }
+    .modal.open{display:flex}
+    .modal-card{
+        width:100%; max-width:1000px; border-radius:16px; overflow:hidden; background:var(--card);
+        box-shadow:0 30px 80px rgba(2,6,23,0.8); border:1px solid rgba(255,255,255,0.03); padding:36px; z-index:80;
+    }
+    .modal.open{display:flex}
+    .modal-card{
+        width:100%; max-width:1000px; border-radius:16px; overflow:hidden; background:var(--card); box-shadow:0 30px 80px rgba(2,6,23,0.8); border:1px solid rgba(255,255,255,0.03);display:grid;grid-template-columns: 1fr 360px;
+    }
+    @media (max-width:900px){.modal-card{grid-template-columns: 1fr}.modal .meta-right{padding:114px} }
+
+    .modal-hero{height:100%; background-size:cover; background-position:center}
+    .meta-right{padding:18px; display:flex;flex-direction:column; gap:12px}
+    .close{justify-self:end;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:20px}
+
+    footer{color:var(--muted);font-size:13px;padding:12px 0;text-align:center}
+
+    /*subtle focus*/
+    .tag:focus, .btn:focus, .swatch:focus, .card:focus{outline:2px solid rgba(110,231,183,0.12);outline-offset:3px}
+
+    /*empty state*/
+    .empty{padding:48px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); text-align:center;color:var(--muted)}
+      </style>
+</head>
+<body>
+    <div class="container"role="main"aria-lablledby="main-title">
+        <header>
+            <div class="logo"aria-hidden="true">DI</div>
+            <div>
+                <h1 id="main-title">Design Inspiration Gallery</h1>
+                <p class="lead">Browse curated UI shots, color palettes & micro-interactions for your next project.</p>
+            </div>
+        </div>
+
+            <div class="controls" aria-hidden="false">
+            <div class="search" role="search">
+            <svg width="16" height="16" viewbox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21|-4.35-4.35" stroke="currentcolor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentcolor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input id="q" placeholder="Search Keyword, e.g. dashboard" aria-label="Search designs"/>
+            </div>
+            <div class="filters" role="list" aria-label="Filters" id="filter-list">
+            <!--tags injected by JS-->
+            </div>
+            <button class="btn ghost" id="randomize">Randomize Palette</button>
+            <button class="btn primary" id="add-sample">Add Sample</button>
+            </div>
+        </header>
+
+        <section id="galleryArea" aria-live="polite">
+        <div class="grid" id="grid">
+        <!--Cards injected by JS-->
+        </div>
+
+        <div>
+        id="empty" class="empty" style="display:none">
+        No results - try different keywords or filters.
+        </div>
+        </section>
+        <footer>
+        Tip: click any colour seatch to copy its hex code. Press <kbd>Esc</kbd> to close the preview.
+        </footer>
+        </div>
+
+        <!-- modal / preview -->
+        <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-card" role="document">
+        <div class="modal-hero" id="modalHero" aria-hidden="true"></div>
+        <div class="meta-right">
+        <div style="display:flex;gap:12px;align-items:center">
+        <div class="avatar" id="modalavtar">D</div>
+        <div style="flex:1">
+        <div id="modaltitle" style="font-weight:700;fint-size:16px;color:#eaf6ff">Title</div>
+        <div id="modalauthor" style="font-size:13px;color:var(--muted)">by Author · <span id="modaltags">tags</span></div>
+        </div>
+        <button class="close" id="closemodal" aria-label="Close preview">X</button>
+        </div>
+
+        <p id="modaldesc" style="color":var(--muted);font-size:13px;color:var(--muted)">Palette</h4>
+        <div id="modalPalette" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        </div>
+
+        <div style="margin-top:auto;display:flex;gap:8px">
+        <button class="btn" id="visit">Open Image</button>
+        <button class="btn" id="copyall">Copy Palette</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+<script>
+    /*
+    Design Inspiration Gallery - Vanilla JS.
+    -Data: samplestory array (id, title, author, img, tags, palette, desc)
+    -Features: search, tag filtering, randomize palettes, copy hex
+    -Accessibility: keyboard close, focus styles
+    */
+
+    const sampleshots = [
+        {
+            id:'s1', title: 'Finance Dashboard-Night Mode', author:'Lina M.',
+            img: 'https://images.unsplash.com/photo-1526378720826-3b2f7b7f6b3e?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=0a9b6dfd56d6f5b4a4f4d6b9a1d5e9a9',
+            tags: ['dashboard','dark','analytics'],
+            palette: ['#071323','#0b2b36','#6ee7b7','#60af8ea'],
+            desc: 'An elegant analytics dashboard with calm blues & mint highlights for KPIs and charts.'
+        },
+        {
+            id: 's2', title: 'Mobile Onboarding Flow', author:'Akash P.',
+            img: 'https://images.unsplash.com/photo-1532619675605-2b9b6b35f8d3?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=a6d7f8b0c7f4d3b6c9a6f4a0b5e6c1f5',
+            tags: ['mobile','ux','illustration'],
+            palette: ['#fffaf0','#ffd6a5','#ff8fa3,'#6b7280','#0f1724'],
+            desc: 'warm, friendly onboarding with playfull illustrations and soft gradients.'
+        },
+        {
+            id: 's3', title 'E-commerce Product Card', author:'Sana Q.',
+            img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=cc0a5ef4f3b5f3a963f2b6e6d7c5b6a9',
+            tags: ['ecommerce','ui','cards'],
+            palettes: ['#ffffff','#0f1724','#f8fafc','#ef4444','#94a3b8'],
+            desc: 'Minimal product card concept with clear CTAs and subtle shadows,'
+        },
+       ];
+
+    cosnt grid = document.getElementByid('Grid');
+    cosnt q = document.getElementByid('Q');
+    cosnt filterlist = document.getElementByid('Filter-List');
+    cosnt emptybox = document.getElementByid('Empty')
+    cosnt modal = document.getElementByid('Modal');
+    cosnt modalhero = document.getElementByid('ModalHero');
+    cosnt modaltitle = document.getElementByid('ModalTitle');
+    cosnt modalauthor = document.getElementByid('ModalAuthor');
+    cosnt modaltags = document.getElementByid('ModalTags');
+    cosnt modaldesc = document.getElementByid('ModalDesc');
+    cosnt modalpalette = document.getElementByid('ModalPalette');
+    cosnt modalavatar = document.getElementByid('ModalAvatar');
+    cosnt closemodal = document.getElementByid('CloseModal');
+    cosnt visitbtn = document.getElementByid('Visit');
+    cosnt copyallbtn = document.getElementByid('CopyAll');
+    cosnt radomizebtn = document.getElementByid('Randomize');
+    cosnt addsample btn = document.getElementByid('Add-Sample');
+
+    let activeTags = new set();
+    let shots = [...sampleshots];// mutable copy
+
+    //utility
+    const $ = s => document.querySelector(s);
+    cosnt createNode = (tag, attrs={}, children=[])=>{
+        cosnt el = document.creteElement(tag);
+        Object.entries(attrs).forEach(([k,v])=>{
+            if(k.startsWith('on')) el.addeventlistener(k.slice(2), v);
+            else if(k === 'html') el.innerHTML = v;
+            else el.setAttribute(k, v);
+        });
+        children.forEach(c => el.appendChild(c));
+        return el;
+    }
+
+    function renderFilters(){
+        // collect tags
+        cosnt tags = Array.from(new Set(shots.flatMap(s => s.tags))).sort();
+        filterList.innerHtml =";
+            tags.forEach (t=>{
+            cosnt btn = createNode('button',{class:'tag',type:'button',tabindex:'0'}.[]);
+            btn.textcontent = t;
+            btn.addeventlistener('click', () => {
+                if(activeTags.has(t)) activeTags.delete(t); else activeTags.add(t);
+                btn.classList.toggle('active');
+                renderGrid();
+            });
+            filterList.appendChild(btn);
+        });
+    }
+
+    function buildCard(shot){
+        cosnt card = createNode('article',{class:'card',tabindex:0});
+        cosnt thumb = createNode('img',{class:'thumb', src:shot.img,alt: shot.title});
+        cosnt body = createNode('div',{class:'card-body'});
+        cosnt meta = createNode('div',{class:'meta'});
+        cosnt avatar = createNode('div',{class:'avatar',ariaHidden:true},[]); avtar.textContent = shot.author.slice(0,1);
+        cosnt title = createNode('h3',{class:'card-title'},[]); title.textcontent = shot.title;
+        cosnt desc = createNode('p',{class:'card-desc'},[]); desc.textcontent = shot.desc;
+        cosnt badges = createNode('div',{class:'Badges'}); shot.tags.forEach(t=>{ cosnt b = createNode('span',{class:'Badges'}); b.textcontent = t; badges.appendChild(b) });
+        cosnt palette = createNode('div',{class:'palette'}); shot.palette.forEach(hex=>{
+            cosnt sw = createNode('button',{class:'swatch',type:'button','aria-label':Copy ${hex} ⁠});
+        sw.style.background = hex;
+        sw.title = Copy ${hex} ⁠;
+        sw.addEventlistener('click', (e)=>{ navigator.clipboard.writetext(hex).then(()=>{ sw.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration;220}) }) });
+    palette.appendChild(sw);
+    });
+
+    meta.appendChild(avtar);
+    meta.appendChild(createNode('div',{html:⁠<div style="font-weight:700">${shot.author}</div><div style="color:var(--muted);font-size:13px">${shot.tags.join(' • ')}</div> ⁠}));
+    body.appendChild(meta);
+    body.appendChild(title);
+    body.appendChild(desc);
+    body.appendChild(badges);
+    body.appendChild(palette);
+
+    cosnt footer = createNode('div',{class:'card-footer'});
+    cosnt action = createNode('div',{class:'actions'});
+    cosnt viewBtn = createNode('button',{class:'btn',type:'button'},[]); viewbtn.textcontent = 'Preview'; viewbtn.addEventListener('click', ()=> openModal(shot));action.appendChild(viewBtn);
+    cosnt copyBtn = cretaNode('button',{class:'btn ghost',type:'button'},[]); copyBtn.textContent='copy palette'; copyBtn.addEventListener('click', ()=>{
+        navigator.clipboard.writeText(shot.palette.join(', ')); copyBtn.animate([{opacity:1},{opacity:0.6},{opacity:1}],{duration:300});
+    });
+
+    footer.appendChild(actions);
+    footer.appendChild(copyBtn);
+
+    body.appendChild(footer);
+
+    card.appendChild(thumb);
+    card.appendChild(body);
+
+    //keyboard: Enter opens preview
+    card.addEventListener('keydown', e=>{
+        if(e.key ==='Enter') openModal(shot);
+    });
+
+    return card;
+    }
+
+    
+
+    
+
+</script>
+</body>
