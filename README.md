@@ -2482,9 +2482,549 @@ print("Customer Order & Payment Data:\n", final_data)
     return card;
     }
 
-    
+function renderGrid(){
+    cosnt query = q.value.trim().toLowerCase();
+    cosnt matches = shots.filter(s=>{
+        cosnt inText = (s.title + ''+ s.desc + '' + s.author + '' + s.tags.join('')).toLowerCase();
+        cosnt passQuery = !query || inText.includes(query);
+        cosnt passTags = activeTags.size === 0 || Array.from(activeTags).every(t => s.tags.includes(t));
+        return passQuery &&passTags;
+    });
 
-    
+    grid.innerHTML =";
+        if(matches.length === 0){
+        emptyBox.style.display = 'block';
+    }else{
+        emptyBox.style.display = 'None';
+        matches.forEach(s => grid.appendChild(buildCard(s)));
+    }
+}
 
-</script>
+function openModal(shot){
+    modalHero.style.backgroundImage = url(${shot.img});
+    modalTitle.textContent = shot.title;
+    modal.Author.textContent = ⁠ by ${shot.author}⁠;
+    modal.Tags.textContent = shot.tags.join(', ');
+    modal.Desc.textContent = shot.Desc;
+    modal.Avatar.textContent = shot.author.slice(0,1);
+    modalPalette.innerHTML = ";
+        shot.palette.forEach(hex=>{
+        cosnt sw = createNode('button',{class:'swatch',type:'button',title:Copy ${hex}});
+    sw.style.background = hex;
+    sw.addEventListener('click', ()=> {
+        navigator.clipboard.writeText(hex);
+        sw.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration:180}]);
+        modalPalette.appendChild(sw);
+    });
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','False');
+    //trap focus minimally by focusing close button
+    closeModal.focus();
+}
+
+    closeModal.addEventListener('click', ()=> {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden','true');
+    });
+    document.addEventListener('keydown',(e)=> {
+        if(e.key ==='Escape' && modal.classList.cotains('open')) {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden','true');
+        }
+    });
+
+    q.addEventListener('input', ()=> renderGrid());
+
+    //randomize palette (applies to all shots)
+    randomizeBtn.addEventListener('click', ()=>{
+        function randHex(){ return '#'+Math.floor(Math.random()*16777215.toString(16).padStart(6,'0') } shots = shots.map(s => ({...s, palette: Array.from({length:5},()=>randHex()}));
+        renderGrid();
+    });
+
+    //add sample  (create a quick synthetic sample)
+    addSampleBtn.addEventListener('click', ()=>{
+        cosnt id = 's' + (Math.random()*9999|0);
+        cosnt newShot = {
+            id, title: 'Quick Concept' + id, author: 'You',
+            img: 'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=3d2b6a0f0a1b6b6c9d6e7f8a1b2c3d4e',
+            tags: ['concept','ui'],
+            palette: ['#f8fafc','#fee2b3','#fb7185','#60a5fa','#0f1724'],
+            desc: 'A quick concept card you added.'
+        };
+        shots.unshift(newShot);
+        renderFilters();
+        renderGrid();
+    });
+
+    function init(){
+        renderFilters();
+        renderGrid();
+    }
+    init();
+         </script>
+    </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Design Inspiration Hub</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'poppins', sans-serif;
+            background: linear-gradient(135deg, #141E30, #243B55);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 80px 20Px;
+        }
+        header h1 {
+            font-size: 3em;
+            color: #00ffd5;
+        }
+        header p {
+            color: #ccc;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.03s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+        }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card h3 {
+            margin: 10px;
+            font-size: 1.3em;
+        }
+        .card p {
+            margin: 10px;
+            font-size: 0.9em;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Design Inspiration Hub</h1>
+        <p>Find creativity in every pixel</p>
+    </header>
+
+    <section class="gallery">
+    <div class="card">
+    <img src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1" alt="">
+    <h3>Modern UI Layout</h3>
+    <p>Clean structure with minimal gradients.</p>
+    </div>
+    <div class="card">
+    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" alt="">
+    <h3>Colorful Dashboard</h3>
+    <p>Vibrant visuals with rounded cards.</p>
+    </div>
+    <div class="card">
+    <img src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04" alt="">
+    <h3>Dark Mode Concept</h3>
+    <p>Elegant tone with neon accents.</p>
+    </div>
+    </section>
 </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallax Inspiration</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;} body,html{height:100%;scroll-behavior:smooth;font-family:'poppins',sans-serif;}
+        section{
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-size:3em;
+            font-weight:700;
+            text-shadow:0 3px 8px rgba(0,0,0,0.4);
+        }
+        .bg1{
+            background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80') center/cover fixed;
+        }
+        .bg2{
+            background:url('https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1600&q=80') center/cover fixed;
+        }
+        .bg3{
+            background:url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1600&q=80') center/cover fixed;
+        }
+        .text{
+            background:rgba(0,0,0,0.4);
+            padding:20px 40px;
+            border-radius:12px;
+        }
+    </style>
+</head>
+<body>
+    <section class="bg1"><div class="text">Create with Vision</div></section>
+    <section class="bg2"><div class="text">Design with Passion</div></section>
+    <section class="bg3"><div class="text">Inspire The World</div></section>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Design Card</title>
+    <style>
+        body{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:linear-gradient(135deg,#020617,#0f172a);
+            font-family:'poppings',sans-serif;
+            }
+        .card{
+            width:300px;
+            height:400px;
+            background:linear-gradient(145deg,#1e293b,#0f172a);
+            border-radius:20px;
+            box-shadow:0 10px 40px rgba(0,0,0,0.4);
+            transform-style:preserve-3d;
+            transition:transform 0.2s ease;
+            color:#fff;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+        }
+        .card h2{font-size:1.5em;}
+    </style>
+</head>
+<body>
+    <div class="card" id="card">
+        <h2>3D Design Inspiration</h2>
+        <p>Move your mouse to tilt!</p>
+    </div>
+    <script>
+        cosnt card = document.getElementByid('card');
+        document.addEventListener('mousemove',(e)=>{
+            cosnt x = (window.innerWidth/2 - e.pageX)/25;
+            cosnt y = (window.innerWidth/2 - e.pageY/25;
+            card.style.transform = rotateY(${x}deg) rotateX(${y}deg);
+        });
+        document.addEventListener('mouseleave',()=>{
+            card.style.transform='rotateY(0deg) rotateX(0deg)';
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Hero Design</title>
+    <style>
+        body{
+            margin:0;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+            background:linear-gradient(120deg,#3b82f6,#06b6d4);
+            font-family:'poppins',sans-serif;
+        }
+        .hero{
+            text-align:center;
+            color:#fff;
+        }
+        .hero h1{
+            font-size:3em;
+            animation:fadein 2s ease forwards;
+        }
+        .hero p{
+            font-size:1.2em;
+            opacity:0.8;
+            animation:fadein 3s ease forwards;
+        }
+        .circle{
+            position:absolute;
+            width:100px;
+            height:100px;
+            border-radius:50%;
+            background:rgba(255,255,255,0.2);
+            animation:float 6s ease-in-out infinite;
+        }
+        .circle:nth-child(1){top:10%;left:20%;animation-delay:0s;}
+        .circle:nth-child(2){bottom:15%;right:25%;animation-delay:1s;}
+        .circle:nth-child(3){top:40%;right:15%,animation-delay:2s;}
+        @keyframes fadein{
+            from{opacity:0;transform:translateY(30px);}
+            to{opacity:1;transform:translateY(0);}
+        }
+    </style>
+</head>
+<body>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="hero">
+        <h1>Design That Inspires</h1>
+        <p>Creative UI & Interactive Motion</p>
+    </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Reveal Inspiration</title>
+    <style>
+        body{
+            background:#0f172a;
+            color:#e2e8f0;
+            font-family:'poppins',sans-serif;
+            margin:0;
+        }
+        section{
+            height:100vh;
+            display:flex;
+            align-item:center;
+            justify-content:center;
+            font-size:2em;
+            opacity:0;
+            transform:translateY(40px);
+            transition:all 1s ease;
+        }
+        section.visible{
+            opacity:1;
+            transform:translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <section style="background:#1e293b;">Inspiration Starts Here</section>
+    <section style="background:#334155;">Think · Design · Create</section>
+    <section style="background:#475569;">Innovate with Passion</section>
+    <script>
+        cosnt sections=document.querySelectorAll("section");
+        window.addEventListner("scroll",()=>{
+            cosnt trigger=window.innerHeight*0.75;
+            sections.forEach(sec=>{
+                cosnt top=sec.getBouncingClientRect().top;
+                if(top<trigger) sec.classList.add("visible");
+            });
+        });
+    </script>
+</body>
+</html>
+
+</DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Design</title>
+    <style>
+        body{
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(120deg,#0f172a,#1e3a8a);
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'poppins',sans-serif;
+        }
+        .container{
+            width: 350px;
+            height: 500px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            color: #fff;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .card:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-6px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Glass UI Ideas</h2>
+        <div class="card">Minimal Login Form</div>
+        <div class="card">Creative Dashboard</div>
+        <div class="card">Soft Gradient Button</div>
+        <div class="card">Blurred Background Effects</div>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Hover Inspiration</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            font-family: 'poppins', sans-serif;
+            gap: 30px;
+        }
+        .button {
+            padding: 20px 40px;
+            border: 2px solid #0ff;
+            color: #0ff;
+            font-size: 1.3em;
+            text-tranform: uppercase;
+            border-radius: 10px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .button::before {
+            content: ";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, #0ff, transparent);
+            transition: 0.05s;
+        }
+        .button:hover::before {
+            left: 100%;
+        }
+        .button:hover {
+            box-shadow: 0 0 20px #0ff, 0 0 50px #0ff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <button class="button">Inspire</button>
+    <button class="button">Create</button>
+    <button class="button">Design</button>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Loader</title>
+    <style>
+        body {
+            background: #111827;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 6px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 20px #4ade80;
+        }
+        @keyframes spin {
+            0%{ transform: rotate(0);}
+            100%{ transform: rotate(360deg);}
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspiration Gallery</title>
+    <style>
+        body {
+            background: #f3f4f6;
+            margin: 0;
+            font-family: 'poppins', sans-serif;
+        }
+        h1 {
+            text-align: center;
+            padding: 40px;
+            color: #111827;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        .gallery img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Design Inspiration Gallery</h1>
+    <div class="gallery">
+        <img src="https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=800&q=80">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80">
+        <img src="https://images.unsplash.com/photo-1483058712412-4245e9b90334?auto=format&fit=crop&w=800&q=80">
+    </div>
+</body>
+</html>
