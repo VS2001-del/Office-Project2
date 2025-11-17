@@ -2384,31 +2384,31 @@ print("Customer Order & Payment Data:\n", final_data)
         },
        ];
 
-    cosnt grid = document.getElementByid('Grid');
-    cosnt q = document.getElementByid('Q');
-    cosnt filterlist = document.getElementByid('Filter-List');
-    cosnt emptybox = document.getElementByid('Empty')
-    cosnt modal = document.getElementByid('Modal');
-    cosnt modalhero = document.getElementByid('ModalHero');
-    cosnt modaltitle = document.getElementByid('ModalTitle');
-    cosnt modalauthor = document.getElementByid('ModalAuthor');
-    cosnt modaltags = document.getElementByid('ModalTags');
-    cosnt modaldesc = document.getElementByid('ModalDesc');
-    cosnt modalpalette = document.getElementByid('ModalPalette');
-    cosnt modalavatar = document.getElementByid('ModalAvatar');
-    cosnt closemodal = document.getElementByid('CloseModal');
-    cosnt visitbtn = document.getElementByid('Visit');
-    cosnt copyallbtn = document.getElementByid('CopyAll');
-    cosnt radomizebtn = document.getElementByid('Randomize');
-    cosnt addsample btn = document.getElementByid('Add-Sample');
+    const grid = document.getElementByid('Grid');
+    const q = document.getElementByid('Q');
+    const filterlist = document.getElementByid('Filter-List');
+    const emptybox = document.getElementByid('Empty')
+    const modal = document.getElementByid('Modal');
+    const modalhero = document.getElementByid('ModalHero');
+    const modaltitle = document.getElementByid('ModalTitle');
+    const modalauthor = document.getElementByid('ModalAuthor');
+    const modaltags = document.getElementByid('ModalTags');
+    const modaldesc = document.getElementByid('ModalDesc');
+    const modalpalette = document.getElementByid('ModalPalette');
+    const modalavatar = document.getElementByid('ModalAvatar');
+    const closemodal = document.getElementByid('CloseModal');
+    const visitbtn = document.getElementByid('Visit');
+    const copyallbtn = document.getElementByid('CopyAll');
+    const radomizebtn = document.getElementByid('Randomize');
+    const addsample btn = document.getElementByid('Add-Sample');
 
     let activeTags = new set();
     let shots = [...sampleshots];// mutable copy
 
     //utility
     const $ = s => document.querySelector(s);
-    cosnt createNode = (tag, attrs={}, children=[])=>{
-        cosnt el = document.creteElement(tag);
+    const createNode = (tag, attrs={}, children=[])=>{
+        const el = document.creteElement(tag);
         Object.entries(attrs).forEach(([k,v])=>{
             if(k.startsWith('on')) el.addeventlistener(k.slice(2), v);
             else if(k === 'html') el.innerHTML = v;
@@ -2420,10 +2420,10 @@ print("Customer Order & Payment Data:\n", final_data)
 
     function renderFilters(){
         // collect tags
-        cosnt tags = Array.from(new Set(shots.flatMap(s => s.tags))).sort();
+        const tags = Array.from(new Set(shots.flatMap(s => s.tags))).sort();
         filterList.innerHtml =";
             tags.forEach (t=>{
-            cosnt btn = createNode('button',{class:'tag',type:'button',tabindex:'0'}.[]);
+            const btn = createNode('button',{class:'tag',type:'button',tabindex:'0'}.[]);
             btn.textcontent = t;
             btn.addeventlistener('click', () => {
                 if(activeTags.has(t)) activeTags.delete(t); else activeTags.add(t);
@@ -2435,16 +2435,16 @@ print("Customer Order & Payment Data:\n", final_data)
     }
 
     function buildCard(shot){
-        cosnt card = createNode('article',{class:'card',tabindex:0});
-        cosnt thumb = createNode('img',{class:'thumb', src:shot.img,alt: shot.title});
-        cosnt body = createNode('div',{class:'card-body'});
-        cosnt meta = createNode('div',{class:'meta'});
-        cosnt avatar = createNode('div',{class:'avatar',ariaHidden:true},[]); avtar.textContent = shot.author.slice(0,1);
-        cosnt title = createNode('h3',{class:'card-title'},[]); title.textcontent = shot.title;
-        cosnt desc = createNode('p',{class:'card-desc'},[]); desc.textcontent = shot.desc;
-        cosnt badges = createNode('div',{class:'Badges'}); shot.tags.forEach(t=>{ cosnt b = createNode('span',{class:'Badges'}); b.textcontent = t; badges.appendChild(b) });
-        cosnt palette = createNode('div',{class:'palette'}); shot.palette.forEach(hex=>{
-            cosnt sw = createNode('button',{class:'swatch',type:'button','aria-label':Copy ${hex} ⁠});
+        const card = createNode('article',{class:'card',tabindex:0});
+        const thumb = createNode('img',{class:'thumb', src:shot.img,alt: shot.title});
+        const body = createNode('div',{class:'card-body'});
+        const meta = createNode('div',{class:'meta'});
+        const avatar = createNode('div',{class:'avatar',ariaHidden:true},[]); avtar.textContent = shot.author.slice(0,1);
+        const title = createNode('h3',{class:'card-title'},[]); title.textcontent = shot.title;
+        const desc = createNode('p',{class:'card-desc'},[]); desc.textcontent = shot.desc;
+        const badges = createNode('div',{class:'Badges'}); shot.tags.forEach(t=>{ const b = createNode('span',{class:'Badges'}); b.textcontent = t; badges.appendChild(b) });
+        const palette = createNode('div',{class:'palette'}); shot.palette.forEach(hex=>{
+            const sw = createNode('button',{class:'swatch',type:'button','aria-label':Copy ${hex} ⁠});
         sw.style.background = hex;
         sw.title = Copy ${hex} ⁠;
         sw.addEventlistener('click', (e)=>{ navigator.clipboard.writetext(hex).then(()=>{ sw.animate([{transform:'scale(1)'},{transform:'scale(0.96)'},{transform:'scale(1)'}],{duration;220}) }) });
@@ -2459,10 +2459,10 @@ print("Customer Order & Payment Data:\n", final_data)
     body.appendChild(badges);
     body.appendChild(palette);
 
-    cosnt footer = createNode('div',{class:'card-footer'});
-    cosnt action = createNode('div',{class:'actions'});
-    cosnt viewBtn = createNode('button',{class:'btn',type:'button'},[]); viewbtn.textcontent = 'Preview'; viewbtn.addEventListener('click', ()=> openModal(shot));action.appendChild(viewBtn);
-    cosnt copyBtn = cretaNode('button',{class:'btn ghost',type:'button'},[]); copyBtn.textContent='copy palette'; copyBtn.addEventListener('click', ()=>{
+    const footer = createNode('div',{class:'card-footer'});
+    const action = createNode('div',{class:'actions'});
+    const viewBtn = createNode('button',{class:'btn',type:'button'},[]); viewbtn.textcontent = 'Preview'; viewbtn.addEventListener('click', ()=> openModal(shot));action.appendChild(viewBtn);
+    const copyBtn = cretaNode('button',{class:'btn ghost',type:'button'},[]); copyBtn.textContent='copy palette'; copyBtn.addEventListener('click', ()=>{
         navigator.clipboard.writeText(shot.palette.join(', ')); copyBtn.animate([{opacity:1},{opacity:0.6},{opacity:1}],{duration:300});
     });
 
@@ -2483,11 +2483,11 @@ print("Customer Order & Payment Data:\n", final_data)
     }
 
 function renderGrid(){
-    cosnt query = q.value.trim().toLowerCase();
-    cosnt matches = shots.filter(s=>{
-        cosnt inText = (s.title + ''+ s.desc + '' + s.author + '' + s.tags.join('')).toLowerCase();
-        cosnt passQuery = !query || inText.includes(query);
-        cosnt passTags = activeTags.size === 0 || Array.from(activeTags).every(t => s.tags.includes(t));
+    const query = q.value.trim().toLowerCase();
+    const matches = shots.filter(s=>{
+        const inText = (s.title + ''+ s.desc + '' + s.author + '' + s.tags.join('')).toLowerCase();
+        const passQuery = !query || inText.includes(query);
+        const passTags = activeTags.size === 0 || Array.from(activeTags).every(t => s.tags.includes(t));
         return passQuery &&passTags;
     });
 
@@ -2509,7 +2509,7 @@ function openModal(shot){
     modal.Avatar.textContent = shot.author.slice(0,1);
     modalPalette.innerHTML = ";
         shot.palette.forEach(hex=>{
-        cosnt sw = createNode('button',{class:'swatch',type:'button',title:Copy ${hex}});
+        const sw = createNode('button',{class:'swatch',type:'button',title:Copy ${hex}});
     sw.style.background = hex;
     sw.addEventListener('click', ()=> {
         navigator.clipboard.writeText(hex);
@@ -2544,8 +2544,8 @@ function openModal(shot){
 
     //add sample  (create a quick synthetic sample)
     addSampleBtn.addEventListener('click', ()=>{
-        cosnt id = 's' + (Math.random()*9999|0);
-        cosnt newShot = {
+        const id = 's' + (Math.random()*9999|0);
+        const newShot = {
             id, title: 'Quick Concept' + id, author: 'You',
             img: 'https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=3d2b6a0f0a1b6b6c9d6e7f8a1b2c3d4e',
             tags: ['concept','ui'],
@@ -2727,10 +2727,10 @@ function openModal(shot){
         <p>Move your mouse to tilt!</p>
     </div>
     <script>
-        cosnt card = document.getElementByid('card');
+        const card = document.getElementByid('card');
         document.addEventListener('mousemove',(e)=>{
-            cosnt x = (window.innerWidth/2 - e.pageX)/25;
-            cosnt y = (window.innerWidth/2 - e.pageY/25;
+            const x = (window.innerWidth/2 - e.pageX)/25;
+            const y = (window.innerWidth/2 - e.pageY/25;
             card.style.transform = rotateY(${x}deg) rotateX(${y}deg);
         });
         document.addEventListener('mouseleave',()=>{
@@ -2831,11 +2831,11 @@ function openModal(shot){
     <section style="background:#334155;">Think · Design · Create</section>
     <section style="background:#475569;">Innovate with Passion</section>
     <script>
-        cosnt sections=document.querySelectorAll("section");
+        const sections=document.querySelectorAll("section");
         window.addEventListner("scroll",()=>{
-            cosnt trigger=window.innerHeight*0.75;
+            const trigger=window.innerHeight*0.75;
             sections.forEach(sec=>{
-                cosnt top=sec.getBouncingClientRect().top;
+                const top=sec.getBouncingClientRect().top;
                 if(top<trigger) sec.classList.add("visible");
             });
         });
@@ -3028,3 +3028,434 @@ function openModal(shot){
     </div>
 </body>
 </html>
+
+db-website/
+    db/
+      init.sql
+    public/
+       index.html
+       styles.css
+       script.js
+       .env.example
+       pakage.json
+       server.js
+       Dockerfile
+       docker-compose.yml
+    --db/init.sql
+    --Run this in your postgres to create database objects used by the app.
+
+CREATE TABLE IF NOT EXISTS items (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- sample data
+INSERT INTO items (name, description, price)
+Values
+    ('Sample item A', 'A demo item', 9.99),
+    ('Sample item B', 'Another demo item', 19.50)
+ON CONFLICT DO NOTHING;
+# .env.example
+PORT=4000
+DATABASE_URL=postgres://postgres:postgres@db:5432/appdb
+# if running locally replace host/db credentials appropriatly.
+{
+    "name": "db-website",
+    "version": "1.0.0",
+    "description": "Simple database-backed website (Node + Express + Postgres)",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "nodemon server.js"
+    },
+    "dependencies": {
+      "cors": "^2.8.5",
+      "dotenv": "^16.0.0",
+      "express": "^4.18.2",
+      "pg": "^8.11.0"
+    },
+    "devDependencies": {
+      "nodemon": "2.0.22"
+    }
+}
+//server.js
+require('dotenv').config();
+const express = require('express');
+const {Pool} = require('pg');
+const path = require('path');
+const cors = require('cors');
+
+const PORT = process.env.PORT || 4000;
+const pool = new Pool({
+    connectingString: process.env.DATABASE_URL
+});
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(_dirname, 'public')));
+
+//health
+app.get('/health', (req, res) => res.json({ ok:true }));
+
+/*
+    API endpoints (JSON):
+    GET /api/items    -> list all items
+    GET /api/items/:id    -> get item
+    POST /api/items       -> create item { name, description, price }
+    PUT  /api/items/:id   -> update item { name, description, price }
+    DELETE /api/items/:id     -> delete item
+*/
+
+//List
+app.get('/api/items',async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM items ORDER BY created_at DESC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Unable to fetch items' });
+    }
+});
+
+//GET
+app.get('/api/items/:id', async (req, res) => {
+    tab {
+        const { id } = req.params;
+        const result = await pool.query('SELECT * FROM items WHERE id = $1', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' }));
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Unable to fetch item' });
+    }
+});
+
+//Create
+app.post('/api/items', async (req, res) => {
+    try {
+        const { name, description = null, price = 0 } = req.body;
+        if (!name) return res.status(400).json({ error: 'Name is required' });
+        const result = await pool.query(
+            INSERT INTO items (name, description, price) VALUES ($1, $2, $3) RETURNING *,
+            [name, description, price]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Unable to create items' });
+    }
+});
+
+//Update
+app.put('/api/items/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price } = req.body;
+        const result = await pool.query(
+             UPDATE items SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price) WHERE id = $4 RETURNING * ⁠,
+             [name, description, price]
+            );
+            if (result.rows.length === 0) return res.status(404).json({ error: 'Not found'});
+            res.json(result.rows[0]);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Unable to update item' });
+        }
+    });
+
+    //Delete
+    app.delete('/api/items/:id', async (req, res) => {
+        try {
+            const { id } = req.params;
+            const result = await pool.query('DELETE FROM items WHERE id = $1 RETURNING *', [id]);
+            if (result.rows.lenth === 0) return res.status(404).json({ error: 'Not found' });
+            res.json({ deleted: true, item: result.rows[0] });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Unable to delete item' });
+        }
+    });
+
+    //Server index.html for any other route (SPA-friendly)
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(_dirname, 'public', 'index.html'));
+    });
+
+    app.listen(PORT, () => {
+        console.log(Server running on port ${PORT} );
+    });
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>DB Website - items</title>
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <main class="container">
+        <h1>Items</h1>
+
+        <section class="form-section">
+        <h2>Create new items</h2>
+        <form id="createForm>
+         <input name="name" id="name" placeholder="Name" required />
+         <input name="price" id="price" type="number" step="0.01" placeholder="price" required />
+         <textarea name="description" id="description" placeholder="Description"></textarea>
+         <button type="submit">Add item</button>
+    </form>
+</section>
+
+<section class="list-section">
+    <h2>All items</h2>
+    <div id="itemsList" class="items-grid"></div>
+</section>
+</main>
+
+<script src="/script.js"></script>
+</body>
+</html>
+/* public/style.css - minimal styling */
+:root { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; } body { margin: 0; padding: 24px;
+PORT=4000
+DATABASE_URL=postgres://postgres:postgres@db:5432/appdb
+JWT_SECRET=your_super_secret_key
+//Fetch items with auth token
+const token = localStorage.getitem("token");
+if (!token) window.location = "/login.html";
+
+async function fetchitems() {
+    const res = await fetch("/api/items",{
+        headers: { Authorization: "Bearer" + token }
+    });
+    const items = await res.json();
+    renderItems(items);
+}
+
+form.onsubmit = async (e) => {
+    e.preventDefault();
+    const payload = {
+        name: name.value.trim(),
+        description: description.value.trim(),
+        price: price.value
+    };
+
+    await fetch("/api/items", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer" + token
+        },
+        body: JSON.stringify(payload)
+    });
+
+    form.reset();
+    fetchItems();
+};
+document.getElementById("loginForm").onsubmit = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    const res = await fetch("/api/auth/login",{
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (data.token) {
+        localStorage.setItem("token", data.token);
+        window.location = "/index.html";
+    } else {
+        alert(data.error || "Login failed");
+    }
+};
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" herf="styles.css" />
+    </head>
+    <body>
+        <main class="container">
+            <h1>Login</h1>
+            <form id="loginForm">
+                <input id="username" placeholder="Username" required />
+                <input id="password" type="password" placeword="Password" required />
+                <button type="submit">Login</button>
+            </form>
+            <p style="margin-top:12px;color:#666;">Default: admin / admin123</p>
+        </main>
+
+        <script src="login.js"></script>
+    </body>
+</html>
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const authMiddleware = require("./middleware/authMiddleware");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+//Serve public files
+app.use(express.static(path.json(_dirname,"..","public")));
+
+//Routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/items", authMiddleware, require("./routes/items"));
+
+//Fallback to SPA
+app.get("*", (req, res) => {
+    res.sendFile(path.join(_dirname, "..", "public", "login.html"));
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(Server running on ${PORT} ));
+const express = require("express");
+const pool = require("../db");
+const router = express.Router();
+
+//GET items for logged-in user
+router.get("/", async (req, res) => {
+    try {
+        const result = await pool.query(
+         "SELECT * FROM items WHERE user_id = $1 ORDER BY created_at DESC",
+         [req.user.id]
+        );
+        res.json(result.rows);
+    } catch (e) {
+        res.status(500).json({ error: "Could not fetch items" });
+    }
+});
+
+//CREATE items
+router.post("/", async (req, res) => {
+    try {
+        const { name, description, price } = req.body;
+
+        const result = await pool.query(
+            INSERT INTO items (name, description, price, user_id)
+            VALUES ($1, $2, $3, $4) RETURNING *`,
+            [name, description, price, req.user.id]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (e) {
+        res.status(500).json({ error: "Create failed" });
+    }
+});
+
+module.exports = router;
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const pool = require('../db');
+
+const router = express.Router();
+
+//LOGIN
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        const result = await pool.query(
+            "SELECT * FROM users WHERE username = $1",
+            [username]
+        );
+
+        if (result.rows.length === 0)
+            return res.status(400).json({ error: "User not found" });
+
+        const user = result.rows[0];
+
+        const ok = await bcrypt.compare(password, user.password);
+        if (!ok) return res.status(400).json({ error: "Wrong password" });
+
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresln: "7d"
+        });
+
+        res.json({ token });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Login failed" });
+    }
+});
+
+module.exports = router;
+const jwt = require("jsonwebtoken");
+
+module.exports = function (req, res, next) {
+    const token = req.headers.authorization?.split("")[1];
+
+    if (!token) return res.status(401).json({ error: "No token" });
+
+    try {
+        const decoded = jwt.verify(token,process.env.JWT_SECRET);
+        req.user = decoded; // contains user.id
+        next();
+    } catch (err) {
+        return res.status(401).json({ error: "Invalid token" });
+    }
+};
+const { Pool } = required("pg");
+require("dotenv").config();
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+});
+
+module.exports = pool;
+db-website/
+    db/
+        init.sql
+    public/
+        index.html        ← product page (only visible after login)
+        login.html
+        style.css
+        script.js
+        login.js
+    src/
+        server.js
+        routes/
+            auth.js
+            items.js
+        middleware/
+            authMiddleware.js
+        db.js
+    .env
+    package.json
+    Dockerfile
+    docker-compose.yml
+-- USERS TABLE
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password TEXT NOT NULL,    --hashed password
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Admin user (password = admin123)
+INSERT INTO user (username, password)
+VALUES ('admin', '$2b$10$ye6pmugo8CqRpKxZV4N5eO3eiZJ43no5Up5iOFDyz7U2s8Dy1eT0q')
+ON CONFLICT DO NOTHING;
+
+
+-- ITEMS TABLE
+CREATE TABLE IF NOT EXISTS items (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT NOW(),
+    user_id INT REFERANCES users(id)
+);
